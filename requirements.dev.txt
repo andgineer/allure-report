@@ -1,0 +1,10 @@
+# app
+Jinja2
+
+# tests
+pytest
+testcontainers
+
+# linter
+pylint
+mypy

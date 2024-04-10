@@ -1,0 +1,40 @@
+exclude: |
+    (?x)(
+        tests/|
+        site/|
+        docs/|
+        __about__.py
+    )
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    # Ruff version.
+    rev: v0.3.5
+    hooks:
+      # Run the linter.
+      - id: ruff
+        args: [ --fix ]
+      # Run the formatter.
+      - id: ruff-format
+
+  - repo: local
+    hooks:
+      - id: mypy
+        name: mypy
+        entry: |
+          mypy
+          --ignore-missing-imports
+          --install-types
+          --non-interactive
+          --strict
+          --implicit-reexport
+          --warn-unused-ignores
+          --cache-fine-grained
+          --no-namespace-packages
+        files: \.py$
+        language: python
+
+      - id: pylint
+        name: Pylint
+        entry: pylint --max-line-length=99 --ignore-imports=yes
+        files: \.py$
+        language: python

@@ -1,0 +1,38 @@
+name: 'allure-report'
+description: 'Generate Allure Report'
+author: 'simple-elf'
+branding:
+  icon: 'layout'
+  color: 'green'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+inputs:
+  allure-results:
+    description: 'Allure test result data directory'
+    required: true
+    default: 'allure-results'
+  allure-report:
+    description: 'Allure report directory'
+    required: true
+    default: 'allure-report'
+  site-source:
+    description: 'Directory where the website source files (e.g., from the gh-pages branch) are checked out'
+    required: true
+    default: 'site-source'
+  allure-history:
+    description: 'Allure report history directory stored in the site source directory'
+    required: true
+    default: 'allure-history'
+  site-path:
+    description: 'Subdirectory within the site source directory where the Allure report will be published'
+    required: false
+    default: ''
+  number-reports-to-keep:
+    description: 'Number of previous Allure reports to keep. Set to 0 to keep all reports.'
+    required: false
+    default: 20
+  site-url:
+    description: 'Custom URL to use instead of the default GitHub Pages URL for the Allure report'
+    required: false
+    default: ''
