@@ -5,63 +5,12 @@ A GitHub Action that generates a visually stunning Allure test report.
 
 ## Inputs
 
-| Input | Description | Default |
-| --- | --- | --- |
-| `allure_results` | **Required**<br>The relative path to the Allure results directory. | `allure-results` |
-| `allure_report` | **Required**<br>The relative path to the directory where Allure will write the generated report. | `allure-report` |
-| `gh_pages` | **Required**<br>The relative path to the `gh-pages` branch folder. On first run this folder can be empty. Also, you need to do a checkout of `gh-pages` branch, even it doesn't exist yet. | `gh-pages` |
-| `allure_history` | **Required**<br>The relative path to the folder, that will be published to GitHub Pages. | `allure-history` |
-| `subfolder` | The relative path to the project folder, if you have few different projects in the repository. This relative path also will be added to GitHub Pages link. Example project [allure-examples](https://github.com/simple-elf/allure-examples). | `''` |
-## Example usage (local action)
-
-```yaml
-- name: Test local action
-  uses: ./allure-report-action
-  if: always()
-  id: allure-report
-  with:
-    allure_results: build/allure-results
-    gh_pages: gh-pages
-    allure_report: allure-report
-    allure_history: allure-history
-```
-
-## Example usage (github action)
-
-```yaml
-- name: Test marketplace action
-  uses: simple-elf/allure-report-action@master
-  if: always()
-  id: allure-report
-  with:
-    allure_results: build/allure-results
-    gh_pages: gh-pages
-    allure_report: allure-report
-    allure_history: allure-history
-```
-
-## Finally you need to publish on GitHub Pages
-
-```yaml
-- name: Deploy report to Github Pages
-  if: always()
-  uses: peaceiris/actions-gh-pages@v2
-  env:
-    PERSONAL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    PUBLISH_BRANCH: gh-pages
-    PUBLISH_DIR: allure-history
-```
-
-## Also you can post the link to the report in the checks section
-
-```yaml
-- name: Post the link to the report
-  if: always()
-  uses: Sibz/github-status-action@v1
-  with: 
-      authToken: ${{secrets.GITHUB_TOKEN}}
-      context: 'Test report'
-      state: 'success'
-      sha: ${{ github.event.pull_request.head.sha }}
-      target_url: simple-elf.github.io/github-allure-history/${{ github.run_number }}
-```
+| Name                   | Description                                                                        | Required | Default          |
+|------------------------|------------------------------------------------------------------------------------|----------|------------------|
+| allure-results         | Allure test result data directory                                                  | true     | allure-results   |
+| allure-report          | Allure report directory                                                            | true     | allure-report    |
+| site-source            | Directory where the website source files (e.g., from the gh-pages branch) are checked out | true     | site-source      |
+| allure-history         | Allure report history directory stored in the site source directory                | true     | allure-history   |
+| site-path              | Subdirectory within the site source directory where the Allure report will be published | false    |                  |
+| number-reports-to-keep| Number of previous Allure reports to keep. Set to 0 to keep all reports            | false    | 20               |
+| site-url               | Custom URL to use instead of the default GitHub Pages URL for the Allure report     | false    |                  |

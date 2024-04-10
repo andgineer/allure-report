@@ -1,4 +1,4 @@
-name: 'allure-report'
+name: 'generate-allure-report'
 description: 'Generate Allure Report'
 author: 'simple-elf'
 branding:
