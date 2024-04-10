@@ -1,9 +1,9 @@
 name: 'generate-allure-report'
 description: 'Generate Allure Report'
-author: 'simple-elf'
+author: 'Andrey Sorokin'
 branding:
-  icon: 'layout'
-  color: 'green'
+  icon: 'bar-chart'
+  color: 'yellow'
 runs:
   using: 'docker'
   image: 'Dockerfile'
