@@ -16,6 +16,8 @@ class AllureGenerator:
         self.environment = Environment(loader=FileSystemLoader("templates"))
 
         # Action inputs
+        self.report_name = self.get_input("report-name")
+        self.ci_name = self.get_input("ci-name")
         self.site_source = Path(self.get_input("site-source"))
         self.allure_history = Path(self.get_input("allure-history"))
         self.allure_results = Path(self.get_input("allure-results"))
@@ -47,6 +49,7 @@ class AllureGenerator:
             print(f"Site url: {site_url}")
 
         self.allure_history.mkdir(parents=True, exist_ok=True)
+        self.site_source.mkdir(parents=True, exist_ok=True)
 
         shutil.copytree(self.site_source, self.allure_history, dirs_exist_ok=True)
 
@@ -62,6 +65,8 @@ class AllureGenerator:
         print(
             f"keep allure history from {self.site_source}/last-history to {self.allure_results}/history"
         )
+        (self.site_source / "last-history").mkdir(parents=True, exist_ok=True)
+        (self.allure_results / "history").mkdir(parents=True, exist_ok=True)
         shutil.copytree(
             self.site_source / "last-history",
             self.allure_results / "history",
@@ -71,6 +76,7 @@ class AllureGenerator:
         self.generate_allure_report(site_url)
 
         print(f"Copy Allure report to {self.allure_history}/{self.github_run_number}")
+        self.allure_report.mkdir(parents=True, exist_ok=True)  # move to test?
         shutil.copytree(
             self.allure_report,
             self.allure_history / self.github_run_number,
@@ -78,6 +84,9 @@ class AllureGenerator:
         )
 
         print(f"Copy Allure report history to {self.allure_history}/last-history")
+        (self.allure_report / "history").mkdir(
+            parents=True, exist_ok=True
+        )  # move to test?
         shutil.copytree(
             self.allure_report / "history",
             self.allure_history / "last-history",
@@ -89,8 +98,9 @@ class AllureGenerator:
         (self.allure_history / "index.html").unlink(missing_ok=True)
         (self.allure_history / "last-history").unlink(missing_ok=True)
         reports = sorted(list(self.allure_history.glob("*")))
-        reports_to_keep = self.number_reports_to_keep - 2
-        for report in reports[:-reports_to_keep]:
+        for report in reports[
+            : -self.number_reports_to_keep + 2  # keep CNAME and todo:?
+        ]:
             if report.name != "CNAME":
                 report.unlink()
 
@@ -103,11 +113,15 @@ class AllureGenerator:
 
     def generate_allure_report(self, site_url):
         template = self.environment.get_template("executor.json")
+        # https://allurereport.org/docs/how-it-works-executor-file/
         rendered_template = template.render(
             url=site_url,
+            report_name=self.report_name,
+            ci_name=self.ci_name,
             github_run_number=self.github_run_number,
             github_server_url=self.github_server_url,
             github_run_id=self.github_run_id,
+            github_repository=self.github_repository,
         )
         (self.allure_results / "executor.json").write_text(rendered_template)
 

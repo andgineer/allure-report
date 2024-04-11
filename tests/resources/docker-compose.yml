@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  allure:
+    build:
+      context: ../../
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    volumes:
+      - ../../templates:/templates:ro
+      - ../../src:/app:ro
+      - ../../allure-results:/allure-results:ro
+      - ./allure-history:/allure-history:rw
+      - ./site-source:/site-source:rw
+      - ./allure-report:/allure-report:rw
