@@ -18,7 +18,7 @@ folder `gh-pages` use:
         path: gh-pages
 ```
 
-Then install run tests with writing Allure results.
+Then run tests with writing Allure results.
 For that install `allure-pytest` and use `--alluredir=./allure-results` option to save results to 
 `allure-results` folder.
 
