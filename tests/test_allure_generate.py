@@ -40,7 +40,7 @@ def test_generate_index_html(tmpdir, expected_index_file, env):
     allure_gen.allure_history = Path(tmpdir) / "allure-history"
     allure_gen.allure_history.mkdir(parents=True, exist_ok=True)
 
-    allure_gen.generate_index_html("https://example.com")
+    allure_gen.create_index_html("https://example.com")
 
     with open(os.path.join(allure_gen.allure_history, "index.html"), "r") as f:
         assert expected_index_file.read() == f.read()

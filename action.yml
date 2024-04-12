@@ -19,7 +19,7 @@ inputs:
   report-path:
     description: 'Allure report path within the website.'
     required: false
-    default: ''
+    default: 'test-report'
   allure-report:
     description: 'Generated Allure report directory, to be pushed to the website repository at the `report-path`.'
     required: true
@@ -36,7 +36,7 @@ inputs:
     description: 'The name of the CI server'
     required: false
     default: 'GitHub Action: {{ github.workflow }}'
-  max-history-reports:
+  max-reports:
     description: 'Number of previous Allure reports to keep. Set to 0 to keep all reports.'
     required: false
     default: 20

@@ -1,12 +1,17 @@
 import os
 import shutil
 import subprocess
+from functools import cached_property
 from pathlib import Path
+
 from jinja2 import Environment, FileSystemLoader
+from .__about__ import __version__
 
 
 class AllureGenerator:
     def __init__(self):
+        print(f"Generate Allure Report action v.{__version__}")
+
         self.github_repository = os.getenv("GITHUB_REPOSITORY")
         self.github_repository_owner = os.getenv("GITHUB_REPOSITORY_OWNER")
         self.github_server_url = os.getenv("GITHUB_SERVER_URL")
@@ -24,78 +29,67 @@ class AllureGenerator:
         self.report_name = self.get_input("report-name")
         self.ci_name = self.get_input("ci-name")
         self.max_history_reports = (
-            int(self.get_input("max-history-reports"))
-            if self.get_input("max-history-reports")
-            else 0
+            int(self.get_input("max-reports")) if self.get_input("max-reports") else 0
         )
 
-        self.prev_report = self.website_source / self.report_path if self.report_path else self.website_source
-        print(f"Prev report in: {self.prev_report}")
+        self.prev_report = (
+            self.website_source / self.report_path
+            if self.report_path
+            else self.website_source
+        )
         self.prev_report.mkdir(parents=True, exist_ok=True)
+        if not self.website_url:
+            repository_name = self.github_repository.split("/")[-1]  # owner/repo
+            self.website_url = (
+                f"https://{self.github_repository_owner}.github.io/{repository_name}"
+            )
 
     def get_input(self, name):
         return os.getenv(f"INPUT_{name.upper().replace('-', '_')}")
 
     def run(self):
-        repository_name = self.github_repository.split("/")[-1]  # owner/repo
-        site_url = f"https://{self.github_repository_owner}.github.io/{repository_name}"
-        if self.website_url:
-            site_url = self.website_url
-            print(f"User defined site url: {site_url}")
+        self.cleanup_reports()
+        self.generate_allure_report()
+        self.create_index_html()
 
-        self.cleanup_reports_history()
-
-        self.generate_index_html(site_url)
-
-        # https://allurereport.org/docs/how-it-works-history-files/
-        print(
-            f"keep allure history from {self.prev_report}/last-history in {self.allure_report}/history"
-        )
-        (self.prev_report / "last-history").mkdir(parents=True, exist_ok=True)
-        (self.allure_report / "history").mkdir(parents=True, exist_ok=True)
-        shutil.copytree(
-            self.prev_report / "last-history",
-            self.allure_results / "history",
-            dirs_exist_ok=True,
-        )
-
-        self.generate_allure_report(site_url)
-
-        print(f"Copy Allure report history to {self.allure_report}/last-history")
-        (self.allure_report / self.github_run_number / "history").mkdir(
-            parents=True, exist_ok=True
-        )  # move to test?
-        shutil.copytree(
-            self.allure_report / self.github_run_number / "history",
-            self.allure_report / "last-history",
-            dirs_exist_ok=True,
-        )
-
-    def cleanup_reports_history(self):
+    def cleanup_reports(self):
         # in site report folder each report is stored in a separate sub folder
-        reports_in_history = len([f for f in self.prev_report.glob("*") if f.name not in ["index.html", "CNAME"]])
+        reports_count = len(
+            [
+                f
+                for f in self.prev_report.glob("*")
+                if f.name not in ["index.html", "CNAME"]
+            ]
+        )
         if (
-                self.max_history_reports
-                and reports_in_history > self.max_history_reports  # already excluding index.html and CNAME
+            self.max_history_reports
+            and reports_count
+            > self.max_history_reports  # already excluding index.html and CNAME
         ):
-            print("Removing old reports")
-            for report in reports_in_history[
-                          : -self.max_history_reports
-                          ]:
+            print(
+                f"Found {reports_count} reports in history, keeping only {self.max_history_reports}"
+            )
+            for report in reports_count[: -self.max_history_reports]:
                 report.unlink()
 
-    def generate_index_html(self, url):
+    @cached_property
+    def last_report_url(self):
+        url_parts = [self.website_url, self.github_run_number, "index.html"]
+        if self.report_path:
+            url_parts.insert(1, self.report_path)
+        return "/".join(url_parts)
+
+    def create_index_html(self):
+        """Create index.html in the report folder root with redirect to the last report."""
         template = self.environment.get_template("index.html")
-        rendered_template = template.render(
-            url=url, github_run_number=self.github_run_number
-        )
+        rendered_template = template.render(url=self.last_report_url)
         (self.allure_report / "index.html").write_text(rendered_template)
 
-    def generate_allure_report(self, site_url):
+    def generate_allure_report(self):
         template = self.environment.get_template("executor.json")
         # https://allurereport.org/docs/how-it-works-executor-file/
         rendered_template = template.render(
-            url=site_url,
+            url=self.last_report_url,
             report_name=self.report_name,
             ci_name=self.ci_name,
             github_run_number=self.github_run_number,
@@ -104,6 +98,14 @@ class AllureGenerator:
             github_repository=self.github_repository,
         )
         (self.allure_report / "executor.json").write_text(rendered_template)
+
+        # https://allurereport.org/docs/how-it-works-history-files/
+        (self.prev_report / "last-history").mkdir(parents=True, exist_ok=True)
+        shutil.copytree(
+            self.prev_report / "last-history",
+            self.allure_results / "history",
+            dirs_exist_ok=True,
+        )
 
         print(
             f"Generating report from {self.allure_report} to {self.allure_report} ..."
@@ -117,6 +119,15 @@ class AllureGenerator:
                 "-o",
                 str(self.allure_report / self.github_run_number),
             ]
+        )
+
+        (self.allure_report / self.github_run_number / "history").mkdir(
+            parents=True, exist_ok=True
+        )  # move to test?
+        shutil.copytree(
+            self.allure_report / self.github_run_number / "history",
+            self.allure_report / "last-history",
+            dirs_exist_ok=True,
         )
 
 

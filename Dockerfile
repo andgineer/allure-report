@@ -1,5 +1,9 @@
 FROM andgineer/allure:2.27.0
 
-COPY src/allure_generate.py /
+ENV APP_HOME=app
+ENV PYTHONPATH=/$APP_HOME
 
-ENTRYPOINT ["python3", "allure_generate.py"]
+COPY src/ /$APP_HOME/
+COPY templates/ /templates/
+
+ENTRYPOINT python3 -m $APP_HOME.allure_generate

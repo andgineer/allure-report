@@ -8,8 +8,8 @@ services:
     env_file:
       - .env
     volumes:
-      - ../../templates:/templates:ro
       - ../../allure-results:/allure-results:rw
       - ./website-source:/website-source:rw
       - ./temp/allure-report:/allure-report:rw
-#      - ../../src:/app:ro
+#      - ../../src/:/app/:ro
+#      - ../../templates:/app/templates:ro

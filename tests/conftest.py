@@ -41,7 +41,7 @@ def env():
         "INPUT_REPORT_PATH": "report-path",
         "INPUT_ALLURE_REPORT": "allure-report",
         "INPUT_WEBSITE_URL": "",
-        "INPUT_MAX_HISTORY_REPORTS": "20",
+        "INPUT_MAX_REPORTS": "20",
         "INPUT_CI_NAME": "GitHub Action: CI",
         "INPUT_REPORT_NAME": "Allure Report",
     }):
