@@ -11,5 +11,5 @@ services:
 # github mount the project where the action runs to /github/workspace
 # and set it as WORKDIR
       - ./allure-results:/github/workspace/allure-results:rw
-      - ./allure-report:/github/workspace/allure-report:rw
+      - ./allure-report:/github/workspace/temp/allure-report:rw
       - ./website-source:/github/workspace/website-source:rw

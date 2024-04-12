@@ -19,10 +19,10 @@ class AllureGenerator:
         self.github_run_id = os.getenv("GITHUB_RUN_ID")
 
         # Action inputs
-        self.allure_results = Path(self.get_input("allure-results"))
-        self.website_source = Path(self.get_input("website-source"))
+        self.allure_results = self.get_input_path("allure-results")
+        self.website_source = self.get_input_path("website-source")
         self.report_path = self.get_input("report-path")
-        self.allure_report = Path(self.get_input("allure-report"))
+        self.allure_report = self.get_input_path("allure-report")
         self.website_url = self.get_input("website-url")
         self.report_name = self.get_input("report-name")
         self.ci_name = self.get_input("ci-name")
@@ -34,6 +34,7 @@ class AllureGenerator:
         templates_dir = base_dir / "templates"
         self.environment = Environment(loader=FileSystemLoader(str(templates_dir)))
 
+        self.allure_report.mkdir(parents=True, exist_ok=True)
         self.prev_report = (
             self.website_source / self.report_path
             if self.report_path
@@ -48,6 +49,12 @@ class AllureGenerator:
 
     def get_input(self, name):
         return os.getenv(f"INPUT_{name.upper()}")
+
+    def get_input_path(self, name) -> Path:
+        path_str = self.get_input(name)
+        if not path_str:
+            raise ValueError(f"Parameter `{name}` cannot be empty.")
+        return Path(path_str)
 
     def run(self):
         self.cleanup_reports()
