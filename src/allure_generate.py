@@ -34,7 +34,7 @@ class AllureGenerator:
         templates_dir = base_dir / "templates"
         self.environment = Environment(loader=FileSystemLoader(str(templates_dir)))
 
-        self.allure_report.mkdir(parents=True, exist_ok=True)
+        (self.allure_report / self.github_run_number).mkdir(parents=True, exist_ok=True)
         self.prev_report = (
             self.website_source / self.report_path
             if self.report_path
@@ -117,7 +117,7 @@ class AllureGenerator:
         )
 
         print(
-            f"Generating report from {self.allure_report} to {self.allure_report} ..."
+            f"Generating report from {self.allure_results} to {self.allure_report} ..."
         )
         subprocess.run(
             [

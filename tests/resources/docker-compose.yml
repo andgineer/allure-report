@@ -8,8 +8,9 @@ services:
     env_file:
       - .env
     volumes:
-# github mount the project where the action runs to /github/workspace
-# and set it as WORKDIR
+# Github mounts the project in which the action runs to /github/workspace
+# and set the folder as WORKDIR, so we mount data folders there.
+# Local paths below are relative to tests/resources
       - ./allure-results:/github/workspace/allure-results:rw
-      - ./allure-report:/github/workspace/temp/allure-report:rw
+      - ./temp/allure-report:/github/workspace/allure-report:rw
       - ./website-source:/github/workspace/website-source:rw
