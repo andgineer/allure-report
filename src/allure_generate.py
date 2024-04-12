@@ -25,7 +25,10 @@ class AllureGenerator:
         self.allure_report = self.get_input_path("allure-report")
         self.website_url = self.get_input("website-url")
         self.report_name = self.get_input("report-name")
-        self.ci_name = self.get_input("ci-name")
+        if self.get_input("ci-name"):
+            self.ci_name = self.get_input("ci-name")
+        else:
+            self.ci_name = f"GitHub Action: {os.getenv('GITHUB_WORKFLOW')}"
         self.max_history_reports = (
             int(self.get_input("max-reports")) if self.get_input("max-reports") else 0
         )
@@ -106,7 +109,7 @@ class AllureGenerator:
             github_run_id=self.github_run_id,
             github_repository=self.github_repository,
         )
-        (self.allure_report / "executor.json").write_text(rendered_template)
+        (self.allure_results / "executor.json").write_text(rendered_template)
 
         # https://allurereport.org/docs/how-it-works-history-files/
         (self.prev_report / "last-history").mkdir(parents=True, exist_ok=True)

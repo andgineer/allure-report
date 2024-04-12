@@ -1,3 +1,5 @@
 /.idea/
 venv/
 tests/resources/temp
+tests/resources/allure-results/history/
+tests/resources/allure-results/executor.json
