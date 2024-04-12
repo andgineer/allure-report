@@ -8,9 +8,8 @@ services:
     env_file:
       - .env
     volumes:
-# github mount the project root to /github/workspace
+# github mount the project where the action runs to /github/workspace
 # and set it as WORKDIR
-      - ../../:/github/workspace/:rw
       - ./allure-results:/github/workspace/allure-results:rw
       - ./allure-report:/github/workspace/allure-report:rw
       - ./website-source:/github/workspace/website-source:rw

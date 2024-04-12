@@ -1,7 +1,10 @@
 FROM andgineer/allure:2.27.0
 
-ENV PYTHONPATH=/github/workspace/src
+ENV PYTHON_SOURCE=/generate-allure-report
+ENV PYTHONPATH=$PYTHON_SOURCE
 
 WORKDIR /github/workspace
 
-ENTRYPOINT python3 -m src.allure_generate
+COPY src/ $PYTHON_SOURCE/app/
+
+ENTRYPOINT python3 -m app.allure_generate

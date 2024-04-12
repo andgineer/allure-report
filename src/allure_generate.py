@@ -18,8 +18,6 @@ class AllureGenerator:
         self.github_run_number = os.getenv("GITHUB_RUN_NUMBER")
         self.github_run_id = os.getenv("GITHUB_RUN_ID")
 
-        self.environment = Environment(loader=FileSystemLoader("templates"))
-
         # Action inputs
         self.allure_results = Path(self.get_input("allure-results"))
         self.website_source = Path(self.get_input("website-source"))
@@ -31,6 +29,10 @@ class AllureGenerator:
         self.max_history_reports = (
             int(self.get_input("max-reports")) if self.get_input("max-reports") else 0
         )
+
+        base_dir = Path(__file__).resolve().parent
+        templates_dir = base_dir / "templates"
+        self.environment = Environment(loader=FileSystemLoader(str(templates_dir)))
 
         self.prev_report = (
             self.website_source / self.report_path
