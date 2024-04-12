@@ -9,8 +9,7 @@ services:
       - .env
     volumes:
       - ../../templates:/templates:ro
-      - ../../src:/app:ro
-      - ../../allure-results:/allure-results:ro
-      - ./allure-history:/allure-history:rw
-      - ./site-source:/site-source:rw
-      - ./allure-report:/allure-report:rw
+      - ../../allure-results:/allure-results:rw
+      - ./website-source:/website-source:rw
+      - ./temp/allure-report:/allure-report:rw
+#      - ../../src:/app:ro

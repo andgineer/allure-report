@@ -7,16 +7,16 @@ from src.allure_generate import AllureGenerator
 def test_create_directories(tmpdir, env):
     result_file_name = "18e5c48c-ca67-4842-91d1-01af64bd4488-result.json"
     allure_gen = AllureGenerator()
-    allure_gen.site_source = Path(tmpdir) / "site-source"
+    allure_gen.website_source = Path(tmpdir) / "website-source"
     allure_gen.allure_history = Path(tmpdir) / "allure-history"
-    (allure_gen.site_source / allure_gen.site_path).mkdir(parents=True, exist_ok=True)
-    with (allure_gen.site_source / allure_gen.site_path / result_file_name).open("w"):
+    (allure_gen.website_source / allure_gen.report_path).mkdir(parents=True, exist_ok=True)
+    with (allure_gen.website_source / allure_gen.report_path / result_file_name).open("w"):
         pass
 
     with patch("subprocess.run") as mock_run:
         allure_gen.run()
 
-        assert allure_gen.site_source.exists()
+        assert allure_gen.website_source.exists()
         assert allure_gen.allure_history.exists()
         assert (allure_gen.allure_history / result_file_name).exists()
 
@@ -26,9 +26,9 @@ def test_create_directories(tmpdir, env):
                     "allure",
                     "generate",
                     "--clean",
-                    str(allure_gen.allure_results),
-                    "-o",
                     str(allure_gen.allure_report),
+                    "-o",
+                    str(allure_gen.allure_history / allure_gen.github_run_number),
                 ]
             )
         ]

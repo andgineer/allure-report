@@ -1,14 +1,18 @@
 import os
+import shutil
+
 import pytest
 import tempfile
 from testcontainers.compose import DockerCompose
+
+from tests.conftest import RESOURCES
 
 SERVICE_NAME = "allure"
 
 
 @pytest.fixture(scope="module")
 def compose(docker_compose_file):
-    with DockerCompose(docker_compose_file) as compose:
+    with DockerCompose(docker_compose_file, build=True) as compose:
         yield compose
 
 
@@ -17,22 +21,20 @@ def container(compose):
     return compose.get_container(SERVICE_NAME)
 
 
-@pytest.fixture(scope="module")
-def allure_results_dir():
-    allure_results_dir = tempfile.mkdtemp()
-    yield allure_results_dir
-    os.rmdir(allure_results_dir)
+@pytest.fixture
+def report_dir():
+    # cleanup folder created by container
+    # the folder for test defined in tests/resources/.env#INPUT_ALLURE_REPORT
+    folder = RESOURCES / "temp" / "allure-report"
+    yield folder
+    # if folder.exists():
+    #     shutil.rmtree(folder)
 
 
-@pytest.fixture(scope="module")
-def allure_report_dir(compose):
-    return compose.get_service_host(SERVICE_NAME)
-
-
-def test_action_creates_allure_report(compose, allure_results_dir, allure_report_dir):
+def test_action_creates_allure_report(compose, report_dir):
     compose.start()
 
-    assert os.path.exists(allure_report_dir), "allure-report directory not created"
+    assert report_dir.exists(), "allure directory not created"
 
     compose.stop()
 
