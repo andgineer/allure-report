@@ -8,8 +8,9 @@ services:
     env_file:
       - .env
     volumes:
-      - ../../allure-results:/allure-results:rw
-      - ./website-source:/website-source:rw
-      - ./temp/allure-report:/allure-report:rw
-#      - ../../src/:/app/:ro
-#      - ../../templates:/app/templates:ro
+# github mount the project root to /github/workspace
+# and set it as WORKDIR
+      - ../../:/github/workspace/:rw
+      - ./allure-results:/github/workspace/allure-results:rw
+      - ./allure-report:/github/workspace/allure-report:rw
+      - ./website-source:/github/workspace/website-source:rw
