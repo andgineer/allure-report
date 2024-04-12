@@ -2,6 +2,71 @@
 
 A GitHub Action that generates a visually stunning Allure test report.
 
+## Usage
+
+After usual checkout of your project you should checkout github pages 
+where we are publishing the Allure report. 
+
+If your github pages are in default `gh-pages` branch, to checkout them to
+folder `gh-pages` use:
+
+```yaml
+    - name: Checkout gh-pages with previous Allure reports
+      uses: actions/checkout@v4
+      with:
+        ref: gh-pages
+        path: gh-pages
+```
+
+Then install run tests with writing Allure results.
+For that install `allure-pytest` and use `--alluredir=./allure-results` option to save results to 
+`allure-results` folder.
+
+```yaml
+    - name: Install pytest Allure plugin
+      run: pip install allure-pytest
+    - name: Test with generating Allure results
+      run: pytest --alluredir=./allure-results tests/
+```
+
+Now we are ready for the main part - generating and publishing the Allure report.
+
+Description of the action input see below in `Inputs`. 
+
+`report-path` is where our report located in the website. 
+We use that path to get previous report from `website-source`, and to create redirect from the root
+to the last report.
+
+As a result of the action we will have in folder `allure-report` new Allure report as well as previous 
+(up to `max-reports`).
+
+```yaml
+    - name: Generate Allure test report
+      uses: andgineer/allure-report@main
+      with:
+        website-source: gh-pages
+        allure-results: allure-results
+        allure-report: allure-report
+        max-reports: 100
+        report-path: allure
+```
+
+To publish the report on the github pages you can use whatever action you like.
+For example:
+
+```yaml
+    - name: Publish Allure test report
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_branch: gh-pages
+        publish_dir: allure-report
+        destination_dir: allure
+```
+
+See full example in
+[the workflow](https://github.com/andgineer/bitwarden-import-msecure/blob/main/.github/workflows/ci.yml)
+
 ## Inputs
 
 | Name               | Description                                                                                               | Required | Default        |
