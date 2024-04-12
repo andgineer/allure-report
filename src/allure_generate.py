@@ -47,7 +47,7 @@ class AllureGenerator:
             )
 
     def get_input(self, name):
-        return os.getenv(f"INPUT_{name.upper().replace('-', '_')}")
+        return os.getenv(f"INPUT_{name.upper()}")
 
     def run(self):
         self.cleanup_reports()
