@@ -111,5 +111,4 @@ All the commands
     inv --list
 
 ## Coverage report
-* [Codecov](https://app.codecov.io/gh/andgineer/allure-report/tree/main/src)
 * [Coveralls](https://coveralls.io/github/andgineer/allure-report)

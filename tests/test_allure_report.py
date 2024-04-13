@@ -82,3 +82,8 @@ def test_unlimit_reports_settings(generator):
     gen.max_history_reports = 0
     gen.cleanup_reports()
     assert all(not report.unlink.called for report in reports)
+
+def test_default_ci_name(env):
+    with patch.dict(os.environ, {"INPUT_CI-NAME": ""}):
+        gen = AllureGenerator()
+        assert gen.ci_name == "GitHub Action: CI/CD"

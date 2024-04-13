@@ -45,6 +45,7 @@ def env():
             "GITHUB_SERVER_URL": "https://github.com",
             "GITHUB_RUN_NUMBER": "1",
             "GITHUB_RUN_ID": "1",
+            "GITHUB_WORKFLOW": "CI/CD",
             "INPUT_ALLURE-RESULTS": str(temp_path / 'resources/allure-results'),
             "INPUT_WEBSITE-SOURCE": str(temp_path / 'resources/website-source'),
             "INPUT_REPORT-PATH": "report-path",

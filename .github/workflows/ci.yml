@@ -64,7 +64,3 @@ jobs:
     - name: Upload coverage data to coveralls.io
       uses: coverallsapp/github-action@v2
 
-    - name: Upload Coverage to Codecov
-      uses: codecov/codecov-action@v3
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

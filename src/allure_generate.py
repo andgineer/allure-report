@@ -163,6 +163,6 @@ class AllureGenerator:  # pylint: disable=too-many-instance-attributes
         )
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     generator = AllureGenerator()
     generator.run()
