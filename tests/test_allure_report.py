@@ -83,6 +83,13 @@ def test_unlimit_reports_settings(generator):
     gen.cleanup_reports()
     assert all(not report.unlink.called for report in reports)
 
+
+def test_empty_path_input(env):
+    with patch.dict(os.environ, {"INPUT_ALLURE-RESULTS": ""}):
+        with pytest.raises(ValueError, match="Parameter `allure-results` cannot be empty."):
+            AllureGenerator()
+
+
 def test_default_ci_name(env):
     with patch.dict(os.environ, {"INPUT_CI-NAME": ""}):
         gen = AllureGenerator()
