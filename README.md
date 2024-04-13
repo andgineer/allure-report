@@ -44,7 +44,7 @@ As a result of the action we will have in folder `allure-report` new Allure repo
 
 ```yaml
     - name: Generate Allure test report
-      uses: andgineer/allure-report@v1
+      uses: andgineer/allure-report@v1.1.0
       with:
         website-source: gh-pages
         allure-results: allure-results
