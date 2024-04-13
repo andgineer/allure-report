@@ -19,14 +19,14 @@ fi
 
 if [[ "$1" == "ss" ]]; then
   # get the latest non-snapshot backward from current commit
-  TAG=$(git describe --match "[0-9]*" --abbrev=0 || echo "")
+  TAG=$(git describe --match "v[0-9]*" --abbrev=0 || echo "")
 else
   # force fetching tags from all branches
   git fetch --tags
   # get the latest by creation, from all branches. note! "[0-9]*" does not repeat square brackets -
   # this is "one digit and any number of any chars".
   TAG=$(git describe \
-    --match "[0-9]*.[0-9]*.[0-9]*" \
+    --match "v[0-9]*.[0-9]*.[0-9]*" \
     --abbrev=0 \
     --tags "$(git rev-list --tags --max-count=1)" \
     || echo "")
@@ -36,7 +36,7 @@ major=0
 minor=0
 build=0
 
-regex="([0-9]+)\.([0-9]+)\.([0-9]+)"
+regex="v([0-9]+)\.([0-9]+)\.([0-9]+)"
 if [[ $TAG =~ $regex ]]; then
   major="${BASH_REMATCH[1]}"
   minor="${BASH_REMATCH[2]}"
@@ -63,7 +63,7 @@ else
 fi
 
 NEW_VERSION=$(echo "$major.$minor.$build")
-NEW_TAG=$(echo "$NEW_VERSION")
+NEW_TAG=$(echo "v$NEW_VERSION")
 echo -e "New version tag: \033[32m$NEW_TAG\033[39m"
 
 read -r -p "Set the version? [y/N] " response
