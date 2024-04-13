@@ -75,6 +75,8 @@ class AllureGenerator:  # pylint: disable=too-many-instance-attributes
     def run(self) -> None:
         """Generate Allure report."""
         self.cleanup_reports()
+        # Copy previous reports to the new report folder
+        shutil.copytree(self.prev_report, self.allure_report, dirs_exist_ok=True)
         self.generate_allure_report()
         self.create_index_html()
 
@@ -131,6 +133,7 @@ class AllureGenerator:  # pylint: disable=too-many-instance-attributes
         (self.allure_results / "executor.json").write_text(rendered_template)
 
         # https://allurereport.org/docs/how-it-works-history-files/
+        # Copy last report history to the allure results so that it is included in the new report
         (self.prev_report / "last-history").mkdir(parents=True, exist_ok=True)
         shutil.copytree(
             self.prev_report / "last-history",
@@ -153,9 +156,6 @@ class AllureGenerator:  # pylint: disable=too-many-instance-attributes
             check=True,
         )
 
-        (self.allure_report / self.github_run_number / "history").mkdir(
-            parents=True, exist_ok=True
-        )  # move to test?
         shutil.copytree(
             self.allure_report / self.github_run_number / "history",
             self.allure_report / "last-history",
