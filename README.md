@@ -2,12 +2,12 @@
 
 [Full report](https://htmlpreview.github.io/?https://github.com/andgineer/allure-report/blob/python-coverage-comment-action-data/htmlcov/index.html)
 
-| Name                        |    Stmts |     Miss |   Cover |   Missing |
-|---------------------------- | -------: | -------: | ------: | --------: |
-| src/\_\_about\_\_.py        |        1 |        0 |    100% |           |
-| src/allure\_generate.py     |       76 |        1 |     99% |        72 |
-| src/templates/executor.json |        1 |        0 |    100% |           |
-|                   **TOTAL** |   **78** |    **1** | **99%** |           |
+| Name                        |    Stmts |     Miss |    Cover |   Missing |
+|---------------------------- | -------: | -------: | -------: | --------: |
+| src/\_\_about\_\_.py        |        1 |        0 |     100% |           |
+| src/allure\_generate.py     |       76 |        0 |     100% |           |
+| src/templates/executor.json |        1 |        0 |     100% |           |
+|                   **TOTAL** |   **78** |    **0** | **100%** |           |
 
 
 ## Setup coverage badge
