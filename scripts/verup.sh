@@ -63,7 +63,7 @@ else
 fi
 
 NEW_VERSION=$(echo "$major.$minor.$build")
-NEW_TAG=$(echo "v$NEW_VERSION")
+NEW_TAG=$(echo "$NEW_VERSION")
 echo -e "New version tag: \033[32m$NEW_TAG\033[39m"
 
 read -r -p "Set the version? [y/N] " response
