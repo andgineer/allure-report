@@ -25,6 +25,12 @@ def expected_index_file():
         yield f
 
 
+@pytest.fixture
+def expected_executor_file():
+    with open(RESOURCES / "executor.json", "r") as f:
+        yield f
+
+
 @pytest.fixture(scope="module")
 def docker_compose_file():
     return RESOURCES
@@ -48,7 +54,7 @@ def env():
             "GITHUB_WORKFLOW": "CI/CD",
             "INPUT_ALLURE-RESULTS": str(temp_path / 'resources/allure-results'),
             "INPUT_WEBSITE-SOURCE": str(temp_path / 'resources/website-source'),
-            "INPUT_REPORT-PATH": "report-path",
+            "INPUT_REPORT-PATH": "test-report",
             "INPUT_ALLURE-REPORT": str(temp_path / 'resources/temp/allure-report'),
             "INPUT_WEBSITE-URL": "",
             "INPUT_MAX-REPORTS": "20",

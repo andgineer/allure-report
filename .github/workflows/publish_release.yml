@@ -1,4 +1,4 @@
-name: Release Workflow
+name: Publish on GitHub Marketplace
 
 on:
   push:

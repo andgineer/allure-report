@@ -1,10 +1,10 @@
 {
-    "name": "GitHub Actions",
+    "name": "GitHub Action: CI",
     "type": "github",
-    "reportName": "Allure Report with history",
-    "url": "{{ url }}",
-    "reportUrl": "{{ url }}/{{ github_run_num }}/",
-    "buildUrl": "{{ github_server_url }}/{{ github_repo }}/actions/runs/{{ github_run_id }}",
-    "buildName": "GitHub Actions Run #{{ github_run_id }}",
-    "buildOrder": "{{ github_run_num }}"
+    "reportName": "Allure Report",
+    "url": "https://owner.github.io/repo/test-report/1/index.html",
+    "reportUrl": "https://owner.github.io/repo/test-report/1/index.html/1/",
+    "buildUrl": "https://github.com/owner/repo/actions/runs/1",
+    "buildName": "GitHub Actions Run #1",
+    "buildOrder": "1"
 }
