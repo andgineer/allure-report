@@ -1,0 +1,14 @@
+-r requirements.txt
+
+# tests
+pytest
+testcontainers
+pytest-cov
+
+# lint
+pre-commit
+pylint
+mypy
+
+# build & reqs management
+invoke

@@ -1,3 +1,5 @@
+[![Build Status](https://github.com/andgineer/allure-report/workflows/CI/badge.svg)](https://github.com/andgineer/allure-report/actions)
+[![Coverage](https://raw.githubusercontent.com/andgineer/allure-report/python-coverage-comment-action-data/badge.svg)](https://htmlpreview.github.io/?https://github.com/andgineer/allure-report/blob/python-coverage-comment-action-data/htmlcov/index.html)
 # GitHub Action to generate Allure Report
 
 A GitHub Action that generates a visually stunning Allure test report.
@@ -79,3 +81,35 @@ See full example in
 | report-name        | The name to be shown on top of the Overview tab in the Allure report                                      | false    | Allure Test Report |
 | ci-name            | The name of the CI server                                                                                 | false    | GitHub Action: {{ github.workflow }} |
 | max-reports| Number of previous Allure reports to keep. Set to 0 to keep all reports.                                  | false    | 20             |
+
+## Development
+
+To create/activate a virtual environment (note the space between the two dots):
+
+    . ./activate.sh
+
+For formatting and linting install pre-commit hooks:
+
+    pre-commit install
+
+Tests uses local docker-compose to run the action.
+It sets env vars like in Github action environment (from `tests/resources/.env` file)
+
+   python -m pytest tests/
+
+You can run the action in the Docker locally with:
+
+    inv run
+    inv logs
+
+for experiments inside the container use:
+
+    inv container
+
+All the commands
+    
+    inv --list
+
+## Coverage report
+* [Codecov](https://app.codecov.io/gh/andgineer/allure-report/tree/main/src)
+* [Coveralls](https://coveralls.io/github/andgineer/allure-report)

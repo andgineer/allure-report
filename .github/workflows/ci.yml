@@ -1,0 +1,70 @@
+# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+#
+name: CI
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      # Gives the action the necessary permissions for publishing new
+      # comments in pull requests.
+      pull-requests: write
+      # Gives the action the necessary permissions for pushing data to the
+      # python-coverage-comment-action branch, and for editing existing
+      # comments (to avoid publishing multiple comments in the same PR)
+      contents: write
+
+    env:
+      PRIMARY_PYTHON_VERSION: '3.12'
+      PYTEST_CMD: >-
+        python -m pytest 
+        --junitxml=pytest.xml 
+        --cov-report=term-missing:skip-covered 
+        --cov=src tests/
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python ${{ env.PRIMARY_PYTHON_VERSION  }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PRIMARY_PYTHON_VERSION  }}
+
+    - name: Install uv environment
+      uses: andgineer/uv-venv@v1
+
+    - name: Install dependencies
+      run: uv pip install -r requirements.dev.txt
+
+    - name: test
+      run: ${{ env.PYTEST_CMD }}
+
+    - name: Coverage comment
+      id: coverage_comment
+      uses: py-cov-action/python-coverage-comment-action@v3
+      with:
+        GITHUB_TOKEN: ${{ github.token }}
+        MINIMUM_GREEN: 85
+        MINIMUM_ORANGE: 70
+
+    - name: Store Pull Request comment to be posted
+      uses: actions/upload-artifact@v3
+      if: steps.coverage_comment.outputs.COMMENT_FILE_WRITTEN == 'true'
+      with:
+        name: python-coverage-comment-action
+        path: python-coverage-comment-action.txt
+
+    - name: Upload coverage data to coveralls.io
+      uses: coverallsapp/github-action@v2
+
+    - name: Upload Coverage to Codecov
+      uses: codecov/codecov-action@v3
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

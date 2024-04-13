@@ -27,11 +27,12 @@ def report_dir():
     # the folder for test defined in tests/resources/.env#INPUT_ALLURE_REPORT
     folder = RESOURCES / "temp" / "allure-report"
     yield folder
-    # if folder.exists():
-    #     shutil.rmtree(folder)
+    if folder.exists():
+        shutil.rmtree(folder)
 
 
-def test_action_creates_allure_report(compose, report_dir):
+@pytest.mark.docker
+def test_allure_generate_docker(compose, report_dir):
     compose.start()
 
     assert report_dir.exists(), "allure directory not created"
