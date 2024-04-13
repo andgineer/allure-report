@@ -28,7 +28,7 @@ def report_dir():
     folder = RESOURCES / "temp" / "allure-report"
     yield folder
     if folder.exists():
-        shutil.rmtree(folder)
+        shutil.rmtree(folder, ignore_errors=True)
 
 
 @pytest.mark.docker
