@@ -1,0 +1,39 @@
+name: Release Workflow
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set version variable
+        run: |
+          echo "RELEASE_VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+          echo "Extracted version: $RELEASE_VERSION"
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.RELEASE_VERSION }}
+          release_name: Release ${{ env.RELEASE_VERSION }}
+
+          body: https://github.com/marketplace/actions/generate-allure-report
+          draft: false
+          prerelease: false
+
+      - name: Publish to GitHub Marketplace
+        uses: github-actions-publish/publish-action@v1
+        with:
+          tag: ${{ env.RELEASE_VERSION }}
