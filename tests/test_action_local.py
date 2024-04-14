@@ -14,7 +14,7 @@ def test_create_directories(env, expected_index_file, expected_executor_file):
         parents=True, exist_ok=True
     )
 
-    with patch("subprocess.run") as mock_run:
+    with patch("subprocess.run") as mock_run, patch('builtins.print') as mock_print:
         allure_gen.run()
 
         assert (allure_gen.allure_results / "history" / "history.json").exists(), "History not copied"
@@ -36,3 +36,5 @@ def test_create_directories(env, expected_index_file, expected_executor_file):
             )
         ]
         mock_run.assert_has_calls(expected_calls)
+        last_report_url = "https://owner.github.io/repo/test-report/1/index.html"
+        mock_print.assert_called_with(f"::set-output name=REPORT_URL::{last_report_url}")

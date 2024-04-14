@@ -79,6 +79,11 @@ class AllureGenerator:  # pylint: disable=too-many-instance-attributes
         shutil.copytree(self.prev_report, self.allure_report, dirs_exist_ok=True)
         self.generate_allure_report()
         self.create_index_html()
+        self.set_output_variables()
+
+    def set_output_variables(self) -> None:
+        """Set GitHub Action output variable."""
+        print(f"::set-output name=REPORT_URL::{self.last_report_url}")
 
     def cleanup_reports(self) -> None:
         """Cleanup old reports if max history reports is set.

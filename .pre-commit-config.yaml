@@ -3,6 +3,7 @@ exclude: |
         tests/|
         site/|
         docs/|
+        tasks.py|
         __about__.py
     )
 repos:

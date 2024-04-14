@@ -20,7 +20,7 @@ def ver_task_factory(version_type: str):
     @task
     def ver(c: Context):
         """Bump the version."""
-        c.run(f"./scripts/verup.sh {version_type}")
+        c.run(f"./scripts/verup_action.sh {version_type}")
 
     return ver
 
