@@ -52,6 +52,8 @@ def env():
             "GITHUB_RUN_NUMBER": "1",
             "GITHUB_RUN_ID": "1",
             "GITHUB_WORKFLOW": "CI/CD",
+            "GITHUB_OUTPUT": str(temp_path / 'github/workflow/output'),
+            "GITHUB_STEP_SUMMARY": str(temp_path / 'github/workflow/summary'),
             "INPUT_ALLURE-RESULTS": str(temp_path / 'resources/allure-results'),
             "INPUT_WEBSITE-SOURCE": str(temp_path / 'resources/website-source'),
             "INPUT_REPORT-PATH": "test-report",
@@ -61,6 +63,9 @@ def env():
             "INPUT_CI-NAME": "GitHub Action: CI",
             "INPUT_REPORT-NAME": "Allure Report",
         }
+        github_output_path = pathlib.Path(env_vars["GITHUB_OUTPUT"])
+        # create github workflow folder for tests
+        github_output_path.parent.mkdir(parents=True, exist_ok=True)
 
         with patch.dict(os.environ, env_vars):
             yield

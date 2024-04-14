@@ -27,8 +27,9 @@ def report_dir():
     # the folder for test defined in tests/resources/.env#INPUT_ALLURE_REPORT
     folder = RESOURCES / "temp" / "allure-report"
     yield folder
-    if folder.exists():
-        shutil.rmtree(folder, ignore_errors=True)
+    shutil.rmtree(RESOURCES / "temp", ignore_errors=True)
+    (RESOURCES / "allure-results" / "executor.json").unlink(missing_ok=True)
+    shutil.rmtree(RESOURCES / "allure-results" / "history", ignore_errors=True)
 
 
 @pytest.mark.docker
@@ -40,4 +41,5 @@ def test_allure_generate_docker(compose, report_dir):
     compose.stop()
     assert (report_dir / "2" / "history" / "history.json").exists()
     assert (report_dir / "2" / "index.html").exists()
+    assert (report_dir / "22" / "history" / "history.json").exists()
     assert (report_dir / "last-history" / "history.json").exists()

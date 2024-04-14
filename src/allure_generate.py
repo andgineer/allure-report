@@ -48,7 +48,8 @@ class AllureGenerator:  # pylint: disable=too-many-instance-attributes
         templates_dir = base_dir / "templates"
         self.environment = Environment(loader=FileSystemLoader(str(templates_dir)))
 
-        (self.allure_report / self.github_run_number).mkdir(parents=True, exist_ok=True)
+        shutil.rmtree(self.allure_report, ignore_errors=True)
+        self.allure_report.mkdir(parents=True, exist_ok=True)
         self.prev_report = (
             self.website_source / self.report_path
             if self.report_path
@@ -74,33 +75,42 @@ class AllureGenerator:  # pylint: disable=too-many-instance-attributes
 
     def run(self) -> None:
         """Generate Allure report."""
-        self.cleanup_reports()
-        # Copy previous reports to the new report folder
+        # 1st copy old reports to result directory to make it safe to republish
         shutil.copytree(self.prev_report, self.allure_report, dirs_exist_ok=True)
+        if not any(self.allure_results.iterdir()):
+            print("No Allure results found, skipping report generation.")
+            return
+        self.cleanup_reports()
         self.generate_allure_report()
         self.create_index_html()
         self.set_output_variables()
 
     def set_output_variables(self) -> None:
         """Set GitHub Action output variable."""
-        print(f"::set-output name=REPORT_URL::{self.last_report_url}")
+        output_file_path = os.environ["GITHUB_OUTPUT"]
+        with open(output_file_path, "a", encoding="utf8") as file:
+            file.write(f"REPORT_URL={self.last_report_url}\n")
 
     def cleanup_reports(self) -> None:
         """Cleanup old reports if max history reports is set.
 
         In site report folder each report is stored in a separate sub folder.
         """
-        reports_folders = [f for f in self.prev_report.glob("*") if f.is_dir()]
+        reports_folders = [
+            f
+            for f in self.allure_report.glob("*")
+            if f.is_dir() and f.name != "last-history"
+        ]
+        print(
+            f"Found {len(reports_folders)} report(s) in history, "
+            f"keeping {self.max_history_reports}"
+        )
         if (
             self.max_history_reports
             and len(reports_folders)
             > self.max_history_reports  # already excluding index.html and CNAME
         ):
             reports_folders.sort(key=lambda x: x.stat().st_mtime)
-            print(
-                f"Found {len(reports_folders)} reports in history, "
-                f"keeping only {self.max_history_reports}"
-            )
             excess_count = len(reports_folders) - self.max_history_reports
 
             # Remove the oldest reports which are the first 'excess_count' elements

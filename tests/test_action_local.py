@@ -1,11 +1,14 @@
+
 import os
 import shutil
+
 from pathlib import Path
 from unittest.mock import patch, call
 from src.allure_generate import AllureGenerator
+from src.__about__ import __version__
 
 
-def test_create_directories(env, expected_index_file, expected_executor_file):
+def test_create_directories(capsys, env, expected_index_file, expected_executor_file):
     allure_gen = AllureGenerator()
     shutil.rmtree(allure_gen.allure_report, ignore_errors=True)
     (allure_gen.allure_results / "executor.json").unlink(missing_ok=True)
@@ -13,8 +16,7 @@ def test_create_directories(env, expected_index_file, expected_executor_file):
     (allure_gen.allure_report / "1" / "history").mkdir(
         parents=True, exist_ok=True
     )
-
-    with patch("subprocess.run") as mock_run, patch('builtins.print') as mock_print:
+    with patch("subprocess.run") as mock_subprocess:
         allure_gen.run()
 
         assert (allure_gen.allure_results / "history" / "history.json").exists(), "History not copied"
@@ -35,6 +37,10 @@ def test_create_directories(env, expected_index_file, expected_executor_file):
                 check=True,
             )
         ]
-        mock_run.assert_has_calls(expected_calls)
+        mock_subprocess.assert_has_calls(expected_calls)
+
+        captured = capsys.readouterr().out
+        assert __version__ in captured, f"Expected a call with `{__version__}` not found in print calls"
+
         last_report_url = "https://owner.github.io/repo/test-report/1/index.html"
-        mock_print.assert_called_with(f"::set-output name=REPORT_URL::{last_report_url}")
+        assert f"REPORT_URL={last_report_url}" in Path(os.environ["GITHUB_OUTPUT"]).read_text()
