@@ -5,9 +5,9 @@
 | Name                        |    Stmts |     Miss |    Cover |   Missing |
 |---------------------------- | -------: | -------: | -------: | --------: |
 | src/\_\_about\_\_.py        |        1 |        0 |     100% |           |
-| src/allure\_generate.py     |       76 |        0 |     100% |           |
+| src/allure\_generate.py     |       79 |        0 |     100% |           |
 | src/templates/executor.json |        1 |        0 |     100% |           |
-|                   **TOTAL** |   **78** |    **0** | **100%** |           |
+|                   **TOTAL** |   **81** |    **0** | **100%** |           |
 
 
 ## Setup coverage badge
