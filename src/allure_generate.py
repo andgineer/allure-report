@@ -94,6 +94,8 @@ class AllureGenerator:  # pylint: disable=too-many-instance-attributes
         self.create_index_html()
         self.output["REPORT_URL"] = self.last_report_url
         self.output["REPORTS_ROOT_URL"] = self.root_url
+        self.output["REPORTS_SITE_PATH"] = self.reports_site_path
+        self.output["REPORTS_SITE"] = str(self.reports_site)
 
     def run(self) -> None:
         """Run main method."""

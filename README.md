@@ -72,6 +72,10 @@ See full example in
 If you also publish some site to the github pages, make sure you backup the reports so the site publishing won't delete them.
 See example in [the workflow](https://github.com/andgineer/bitwarden-import-msecure/blob/main/.github/workflows/docs.yml)
 
+## Limitations
+
+As Dockerfile action runs only on Linux runners.
+
 ## Inputs
 
 | Name              | Description                                                                                                     | Required | Default                              |
@@ -87,10 +91,13 @@ See example in [the workflow](https://github.com/andgineer/bitwarden-import-msec
 
 ## Outputs
 
-| Name             | Description                                                               | 
-|------------------|---------------------------------------------------------------------------|
-| REPORT_URL       | URL of the created report                                                 | 
-| REPORTS_ROOT_URL | Root of all reports with index.html that auto-redirect to the last report |
+| Name              | Description                                                               | 
+|-------------------|---------------------------------------------------------------------------|
+| REPORT_URL        | URL of the created report                                                 | 
+| REPORTS_ROOT_URL  | Root of all reports with index.html that auto-redirect to the last report |
+| REPORTS_SITE_PATH | Copy of input reports-site-path for convenience use in next actions       |
+| REPORTS_SITE | Copy of input reports-site for convenience use in next actions            |
+
 
 ## Development
 
