@@ -7,6 +7,8 @@ from functools import cached_property
 from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader
+
+from .github_actions import InputProxy, OutputProxy  # pylint: disable=relative-beyond-top-level
 from .__about__ import __version__  # pylint: disable=relative-beyond-top-level
 
 
@@ -30,16 +32,16 @@ class AllureGenerator:  # pylint: disable=too-many-instance-attributes
         # Action inputs
         self.allure_results = self.get_input_path("allure-results")
         self.website_source = self.get_input_path("website-source")
-        self.report_path = self.get_input("report-path")
+        self.report_path = self.input["report-path"]
         self.allure_report = self.get_input_path("allure-report")
-        self.website_url = self.get_input("website-url")
-        self.report_name = self.get_input("report-name")
-        if self.get_input("ci-name"):
-            self.ci_name = self.get_input("ci-name")
+        self.website_url = self.input["website-url"]
+        self.report_name = self.input["report-name"]
+        if self.input["ci-name"]:
+            self.ci_name = self.input["ci-name"]
         else:
             self.ci_name = f"GitHub Action: {os.getenv('GITHUB_WORKFLOW')}"
         self.max_history_reports = (
-            int(self.get_input("max-reports")) if self.get_input("max-reports") else 0
+            int(self.input["max-reports"]) if self.input["max-reports"] else 0
         )
         if self.max_history_reports < 0:
             raise ValueError("max-reports cannot be negative.")
@@ -62,13 +64,19 @@ class AllureGenerator:  # pylint: disable=too-many-instance-attributes
                 f"https://{self.github_repository_owner}.github.io/{repository_name}"
             )
 
-    def get_input(self, name: str) -> str:
-        """Get Action Input value."""
-        return os.environ[f"INPUT_{name.upper()}"]
+    @property
+    def output(self):
+        """Get Action Output."""
+        return OutputProxy()
+
+    @property
+    def input(self):
+        """Get Action Input."""
+        return InputProxy()
 
     def get_input_path(self, name: str) -> Path:
         """Get Action Input value as Path."""
-        path_str = self.get_input(name)
+        path_str = self.input[name]
         if not path_str:
             raise ValueError(f"Parameter `{name}` cannot be empty.")
         return Path(path_str)
@@ -83,13 +91,7 @@ class AllureGenerator:  # pylint: disable=too-many-instance-attributes
         self.cleanup_reports()
         self.generate_allure_report()
         self.create_index_html()
-        self.set_output_variables()
-
-    def set_output_variables(self) -> None:
-        """Set GitHub Action output variable."""
-        output_file_path = os.environ["GITHUB_OUTPUT"]
-        with open(output_file_path, "a", encoding="utf8") as file:
-            file.write(f"REPORT_URL={self.last_report_url}\n")
+        self.output["REPORT_URL"] = self.last_report_url
 
     def cleanup_reports(self) -> None:
         """Cleanup old reports if max history reports is set.
