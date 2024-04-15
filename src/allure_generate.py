@@ -8,7 +8,7 @@ from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader
 
-from .github_actions import InputProxy, OutputProxy  # pylint: disable=relative-beyond-top-level
+from .inputs_outputs import InputProxy, OutputProxy  # pylint: disable=relative-beyond-top-level
 from .__about__ import __version__  # pylint: disable=relative-beyond-top-level
 
 
@@ -65,12 +65,12 @@ class AllureGenerator:  # pylint: disable=too-many-instance-attributes
             )
 
     @property
-    def output(self):
+    def output(self) -> OutputProxy:
         """Get Action Output."""
         return OutputProxy()
 
     @property
-    def input(self):
+    def input(self) -> InputProxy:
         """Get Action Input."""
         return InputProxy()
 
