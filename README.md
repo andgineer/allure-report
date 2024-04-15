@@ -69,6 +69,9 @@ For example:
 See full example in
 [the workflow](https://github.com/andgineer/bitwarden-import-msecure/blob/main/.github/workflows/ci.yml)
 
+If you also publish some site to the github pages, make sure you backup the reports so the site publishing won't delete them.
+See example in [the workflow](https://github.com/andgineer/bitwarden-import-msecure/blob/main/.github/workflows/docs.yml)
+
 ## Inputs
 
 | Name               | Description                                                                                               | Required | Default        |
@@ -81,6 +84,13 @@ See full example in
 | report-name        | The name to be shown on top of the Overview tab in the Allure report                                      | false    | Allure Test Report |
 | ci-name            | The name of the CI server                                                                                 | false    | GitHub Action: {{ github.workflow }} |
 | max-reports| Number of previous Allure reports to keep. Set to 0 to keep all reports.                                  | false    | 20             |
+
+## Outputs
+
+| Name             | Description                                                               | 
+|------------------|---------------------------------------------------------------------------|
+| REPORT_URL       | URL of the created report                                                 | 
+| REPORTS_ROOT_URL | Root of all reports with index.html that auto-redirect to the last report |
 
 ## Development
 

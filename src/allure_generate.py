@@ -3,6 +3,8 @@
 import os
 import shutil
 import subprocess
+import sys
+import traceback
 from functools import cached_property
 from pathlib import Path
 
@@ -81,17 +83,25 @@ class AllureGenerator:  # pylint: disable=too-many-instance-attributes
             raise ValueError(f"Parameter `{name}` cannot be empty.")
         return Path(path_str)
 
-    def run(self) -> None:
+    def main(self) -> None:
         """Generate Allure report."""
         # 1st copy old reports to result directory to make it safe to republish
         shutil.copytree(self.prev_report, self.allure_report, dirs_exist_ok=True)
         if not any(self.allure_results.iterdir()):
-            print("No Allure results found, skipping report generation.")
-            return
+            raise ValueError(f"No Allure results found in `{self.allure_results}`.")
         self.cleanup_reports()
         self.generate_allure_report()
         self.create_index_html()
         self.output["REPORT_URL"] = self.last_report_url
+        self.output["REPORTS_ROOT_URL"] = self.root_url
+
+    def run(self) -> None:
+        """Run main method."""
+        try:
+            self.main()
+        except Exception:  # pylint: disable=broad-except
+            traceback.print_exc(file=sys.stderr)
+            sys.exit(1)
 
     def cleanup_reports(self) -> None:
         """Cleanup old reports if max history reports is set.
@@ -121,12 +131,16 @@ class AllureGenerator:  # pylint: disable=too-many-instance-attributes
                 report.unlink()
 
     @cached_property
+    def root_url(self) -> str:
+        """Get URL to the last report."""
+        if self.report_path:
+            return "/".join([self.website_url, self.report_path])
+        return self.website_url  # type: ignore
+
+    @cached_property
     def last_report_url(self) -> str:
         """Get URL to the last report."""
-        url_parts = [self.website_url, self.github_run_number, "index.html"]
-        if self.report_path:
-            url_parts.insert(1, self.report_path)
-        return "/".join(url_parts)
+        return "/".join([self.root_url, self.github_run_number, "index.html"])
 
     def create_index_html(self) -> None:
         """Create index.html in the report folder root with redirect to the last report."""
