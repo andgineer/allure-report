@@ -5,9 +5,10 @@
 | Name                        |    Stmts |     Miss |   Cover |   Missing |
 |---------------------------- | -------: | -------: | ------: | --------: |
 | src/\_\_about\_\_.py        |        1 |        0 |    100% |           |
-| src/allure\_generate.py     |       85 |        2 |     98% |     81-82 |
+| src/allure\_generate.py     |       86 |        2 |     98% |     89-90 |
+| src/github\_actions.py      |       51 |       14 |     73% |33-39, 42, 45, 48, 51, 71, 78-79, 82, 85, 88, 95 |
 | src/templates/executor.json |        1 |        0 |    100% |           |
-|                   **TOTAL** |   **87** |    **2** | **98%** |           |
+|                   **TOTAL** |  **139** |   **16** | **88%** |           |
 
 
 ## Setup coverage badge
