@@ -13,11 +13,12 @@ If your github pages are in default `gh-pages` branch, to checkout them to
 folder `gh-pages` use:
 
 ```yaml
-    - name: Checkout gh-pages with previous Allure reports
+    - name: Checkout github pages with previous Allure reports
       uses: actions/checkout@v4
       with:
         ref: gh-pages
-        path: gh-pages
+        path: gh-pages-dir
+
 ```
 
 Then run tests with writing Allure results.
@@ -35,22 +36,25 @@ Now we are ready for the main part - generating and publishing the Allure report
 
 Description of the action input see below in `Inputs`. 
 
-`report-path` is where our report located in the website. 
+`reports-site-path` is where our report located in the website. 
 We use that path to get previous report from `website-source`, and to create redirect from the root
 to the last report.
 
-As a result of the action we will have in folder `allure-report` new Allure report as well as previous 
+As a result of the action we will have in folder `reports-site` new Allure report as well as previous 
 (up to `max-reports`).
+
+Note `if: always()` to create report even if the tests failed.
 
 ```yaml
     - name: Generate Allure test report
-      uses: andgineer/allure-report@v1.1.0
+      uses: andgineer/allure-report@v1.5
+      id: allure-report
+      if: always()
       with:
-        website-source: gh-pages
+        website-source: gh-pages-dir
         allure-results: allure-results
-        allure-report: allure-report
-        max-reports: 100
-        report-path: allure
+        reports-site: reports-site
+        reports-site-path: builds/tests
 ```
 
 To publish the report on the github pages you can use whatever action you like.
@@ -59,11 +63,12 @@ For example:
 ```yaml
     - name: Publish Allure test report
       uses: peaceiris/actions-gh-pages@v3
+      if: ${{ always() && (steps.allure-report.outcome == 'success') }}
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_branch: gh-pages
-        publish_dir: allure-report
-        destination_dir: allure
+        publish_dir: ${{ steps.allure-report.outputs.REPORTS_SITE }}
+        destination_dir: ${{ steps.allure-report.outputs.REPORTS_SITE_PATH }}
 ```
 
 See full example in
