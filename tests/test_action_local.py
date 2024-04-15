@@ -10,10 +10,10 @@ from src.__about__ import __version__
 
 def test_create_directories(capsys, env, expected_index_file, expected_executor_file):
     allure_gen = AllureGenerator()
-    shutil.rmtree(allure_gen.allure_report, ignore_errors=True)
+    shutil.rmtree(allure_gen.reports_site, ignore_errors=True)
     (allure_gen.allure_results / "executor.json").unlink(missing_ok=True)
     shutil.rmtree(allure_gen.allure_results / "history", ignore_errors=True)
-    (allure_gen.allure_report / "1" / "history").mkdir(
+    (allure_gen.reports_site / "1" / "history").mkdir(
         parents=True, exist_ok=True
     )
     with patch("subprocess.run") as mock_subprocess:
@@ -21,8 +21,8 @@ def test_create_directories(capsys, env, expected_index_file, expected_executor_
 
         assert (allure_gen.allure_results / "history" / "history.json").exists(), "History not copied"
         assert (allure_gen.allure_results / "executor.json").read_text() == expected_executor_file.read()
-        assert (allure_gen.allure_report / "index.html").read_text() == expected_index_file.read()
-        assert (allure_gen.allure_report / "22" / "index.html").exists(), "Previous reports not copied"
+        assert (allure_gen.reports_site / "index.html").read_text() == expected_index_file.read()
+        assert (allure_gen.reports_site / "22" / "index.html").exists(), "Previous reports not copied"
 
         expected_calls = [
             call(
@@ -32,7 +32,7 @@ def test_create_directories(capsys, env, expected_index_file, expected_executor_
                     "--clean",
                     str(allure_gen.allure_results),
                     "-o",
-                    str(allure_gen.allure_report / allure_gen.github_run_number),
+                    str(allure_gen.reports_site / allure_gen.github_run_number),
                 ],
                 check=True,
             )
@@ -42,5 +42,5 @@ def test_create_directories(capsys, env, expected_index_file, expected_executor_
         captured = capsys.readouterr().out
         assert __version__ in captured, f"Expected a call with `{__version__}` not found in print calls"
 
-        last_report_url = "https://owner.github.io/repo/test-report/1/index.html"
+        last_report_url = "https://owner.github.io/repo/builds/tests/1/index.html"
         assert f"REPORT_URL={last_report_url}" in Path(os.environ["GITHUB_OUTPUT"]).read_text()

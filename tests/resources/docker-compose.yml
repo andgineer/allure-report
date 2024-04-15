@@ -13,5 +13,5 @@ services:
 # Local paths below are relative to tests/resources
       - ./allure-results:/github/workspace/allure-results:rw
       - ./website-source:/github/workspace/website-source:rw
-      - ./temp/allure-report:/github/workspace/allure-report:rw
+      - ./temp/reports-site:/github/workspace/reports-site:rw
       - ./temp/workflow:/github/workflow:rw

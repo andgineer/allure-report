@@ -16,14 +16,14 @@ inputs:
     description: 'Website checkout location (e.g., from the gh-pages branch).'
     required: true
     default: 'gh-pages'
-  report-path:
+  reports-site-path:
     description: 'Allure report path within the website.'
     required: false
-    default: 'test-report'
-  allure-report:
-    description: 'Generated Allure report directory, to be pushed to the website repository at the `report-path`.'
+    default: 'builds/tests'
+  reports-site:
+    description: 'Generated Allure reports directory, to be pushed to the website repository at the `reports-site-path`.'
     required: true
-    default: 'allure-report'
+    default: 'reports-site'
   website-url:
     description: 'Custom URL to use instead of the default GitHub Pages URL for the website where Allure report will be published'
     required: false

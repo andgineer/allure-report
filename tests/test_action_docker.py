@@ -25,8 +25,7 @@ def container(compose):
 def report_dir():
     # cleanup folder created by container
     # the folder for test defined in tests/resources/.env#INPUT_ALLURE_REPORT
-    folder = RESOURCES / "temp" / "allure-report"
-    yield folder
+    yield RESOURCES / "temp" / "reports-site"
     shutil.rmtree(RESOURCES / "temp", ignore_errors=True)
     (RESOURCES / "allure-results" / "executor.json").unlink(missing_ok=True)
     shutil.rmtree(RESOURCES / "allure-results" / "history", ignore_errors=True)

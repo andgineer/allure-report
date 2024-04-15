@@ -34,8 +34,8 @@ class AllureGenerator:  # pylint: disable=too-many-instance-attributes
         # Action inputs
         self.allure_results = self.get_input_path("allure-results")
         self.website_source = self.get_input_path("website-source")
-        self.report_path = self.input["report-path"]
-        self.allure_report = self.get_input_path("allure-report")
+        self.reports_site_path = self.input["reports-site-path"]
+        self.reports_site = self.get_input_path("reports-site")
         self.website_url = self.input["website-url"]
         self.report_name = self.input["report-name"]
         if self.input["ci-name"]:
@@ -52,11 +52,11 @@ class AllureGenerator:  # pylint: disable=too-many-instance-attributes
         templates_dir = base_dir / "templates"
         self.environment = Environment(loader=FileSystemLoader(str(templates_dir)))
 
-        shutil.rmtree(self.allure_report, ignore_errors=True)
-        self.allure_report.mkdir(parents=True, exist_ok=True)
+        shutil.rmtree(self.reports_site, ignore_errors=True)
+        self.reports_site.mkdir(parents=True, exist_ok=True)
         self.prev_report = (
-            self.website_source / self.report_path
-            if self.report_path
+            self.website_source / self.reports_site_path
+            if self.reports_site_path
             else self.website_source
         )
         self.prev_report.mkdir(parents=True, exist_ok=True)
@@ -86,7 +86,7 @@ class AllureGenerator:  # pylint: disable=too-many-instance-attributes
     def main(self) -> None:
         """Generate Allure report."""
         # 1st copy old reports to result directory to make it safe to republish
-        shutil.copytree(self.prev_report, self.allure_report, dirs_exist_ok=True)
+        shutil.copytree(self.prev_report, self.reports_site, dirs_exist_ok=True)
         if not any(self.allure_results.iterdir()):
             raise ValueError(f"No Allure results found in `{self.allure_results}`.")
         self.cleanup_reports()
@@ -110,7 +110,7 @@ class AllureGenerator:  # pylint: disable=too-many-instance-attributes
         """
         reports_folders = [
             f
-            for f in self.allure_report.glob("*")
+            for f in self.reports_site.glob("*")
             if f.is_dir() and f.name != "last-history"
         ]
         print(
@@ -133,8 +133,8 @@ class AllureGenerator:  # pylint: disable=too-many-instance-attributes
     @cached_property
     def root_url(self) -> str:
         """Get URL to the last report."""
-        if self.report_path:
-            return "/".join([self.website_url, self.report_path])
+        if self.reports_site_path:
+            return "/".join([self.website_url, self.reports_site_path])
         return self.website_url  # type: ignore
 
     @cached_property
@@ -146,7 +146,7 @@ class AllureGenerator:  # pylint: disable=too-many-instance-attributes
         """Create index.html in the report folder root with redirect to the last report."""
         template = self.environment.get_template("index.html")
         rendered_template = template.render(url=self.last_report_url)
-        (self.allure_report / "index.html").write_text(rendered_template)
+        (self.reports_site / "index.html").write_text(rendered_template)
 
     def generate_allure_report(self) -> None:
         """Prepare params and Call allure generate."""
@@ -173,7 +173,7 @@ class AllureGenerator:  # pylint: disable=too-many-instance-attributes
         )
 
         print(
-            f"Generating report from {self.allure_results} to {self.allure_report} ..."
+            f"Generating report from {self.allure_results} to {self.reports_site} ..."
         )
         subprocess.run(
             [
@@ -182,14 +182,14 @@ class AllureGenerator:  # pylint: disable=too-many-instance-attributes
                 "--clean",
                 str(self.allure_results),
                 "-o",
-                str(self.allure_report / self.github_run_number),
+                str(self.reports_site / self.github_run_number),
             ],
             check=True,
         )
 
         shutil.copytree(
-            self.allure_report / self.github_run_number / "history",
-            self.allure_report / "last-history",
+            self.reports_site / self.github_run_number / "history",
+            self.reports_site / "last-history",
             dirs_exist_ok=True,
         )
 
