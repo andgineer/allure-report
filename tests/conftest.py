@@ -55,7 +55,7 @@ def env():
             "GITHUB_OUTPUT": str(temp_path / 'github/workflow/output'),
             "GITHUB_STEP_SUMMARY": str(temp_path / 'github/workflow/summary'),
             "INPUT_ALLURE-RESULTS": str(temp_path / 'resources/allure-results'),
-            "INPUT_WEBSITE-SOURCE": str(temp_path / 'resources/website-source'),
+            "INPUT_WEBSITE": str(temp_path / 'resources/gh-pages-dir'),
             "INPUT_REPORTS-SITE-PATH": "builds/tests",
             "INPUT_REPORTS-SITE": str(temp_path / 'resources/temp/reports-site'),
             "INPUT_WEBSITE-URL": "",

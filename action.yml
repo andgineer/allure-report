@@ -12,18 +12,18 @@ inputs:
     description: 'Allure test result directory created by tests.'
     required: true
     default: 'allure-results'
-  website-source:
-    description: 'Website checkout location (e.g., from the gh-pages branch).'
+  website:
+    description: 'Website directory (e.g., checkouted from the gh-pages branch).'
     required: true
-    default: 'gh-pages'
+    default: 'gh-pages-dir'
   reports-site-path:
     description: 'Allure report path within the website.'
     required: false
     default: 'builds/tests'
   reports-site:
-    description: 'Generated Allure reports directory, to be pushed to the website repository at the `reports-site-path`.'
+    description: 'Allure reports directory, to be pushed to the website repository at the `reports-site-path`. Each report on the subfolder with the github run number. If specified the old reports copied from `website`. By default create report inplace in `website`/`reports-site-path`.'
     required: true
-    default: 'reports-site'
+    default: ''
   website-url:
     description: 'Custom URL to use instead of the default GitHub Pages URL for the website where Allure report will be published'
     required: false

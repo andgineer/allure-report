@@ -1,4 +1,7 @@
+"""Local e2e tests.
 
+Mock allure generate.
+"""
 import os
 import shutil
 

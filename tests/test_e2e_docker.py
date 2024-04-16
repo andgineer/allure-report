@@ -1,8 +1,10 @@
-import os
+"""Dockerized e2e tests.
+
+With real allure generate call.
+"""
 import shutil
 
 import pytest
-import tempfile
 from testcontainers.compose import DockerCompose
 
 from tests.conftest import RESOURCES

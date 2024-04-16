@@ -57,7 +57,7 @@ def test_no_reports_to_delete(generator):
 def test_no_reports_at_all(generator):
     gen, reports = generator
     # Mock no reports being present
-    gen.prev_report.glob.return_value = []
+    gen.prev_reports.glob.return_value = []
     gen.cleanup_reports()
     assert all(not report.unlink.called for report in reports)
 
@@ -94,3 +94,23 @@ def test_default_ci_name(env):
     with patch.dict(os.environ, {"INPUT_CI-NAME": ""}):
         gen = AllureGenerator()
         assert gen.ci_name == "GitHub Action: CI/CD"
+
+
+def test_inplace_reports(env):
+    with patch.dict(os.environ, {"INPUT_REPORTS-SITE": ""}):
+        gen = AllureGenerator()
+        assert gen.reports_site == gen.prev_reports
+        assert (gen.reports_site / "22" / "index.html").exists()
+
+
+def test_website_folder_unexisted(env):
+    with patch.dict(os.environ, {"INPUT_WEBSITE": "-unexisted-"}):
+        with patch("subprocess.run"):
+            gen = AllureGenerator()
+            (gen.reports_site / gen.github_run_number / "history").mkdir(
+                parents=True, exist_ok=True
+            )
+            gen.run()
+        assert not (gen.reports_site / "22").exists()
+        assert (gen.reports_site / "index.html").exists()
+        assert not (gen.reports_site / "22").exists()

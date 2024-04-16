@@ -2,8 +2,7 @@
     "name": "{{ ci_name }}",
     "type": "github",
     "reportName": "{{ report_name }}",
-    "url": "{{ url }}",
-    "reportUrl": "{{ url }}/{{ github_run_number }}/",
+    "reportUrl": "{{ report_url }}",
     "buildUrl": "{{ github_server_url }}/{{ github_repository }}/actions/runs/{{ github_run_id }}",
     "buildName": "GitHub Actions Run #{{ github_run_id }}",
     "buildOrder": "{{ github_run_number }}"
