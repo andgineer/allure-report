@@ -134,7 +134,7 @@ Each report is stored in folder with the github run number.
 
 In the root of the reports folder the action creates `index.html` with redirect to the last report.
 
-All specified in action inputs folders could do not exist, they will be created if needed.
+All specified in action input folders could do not exist, they will be created if needed.
 
 In output `REPORTS_SITE` will be folder to publish on the `reports-site-path` in your website. 
 This is subfolder `reports-site-path` of the `website`, or `reports-site` if it was specified.
