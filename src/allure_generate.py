@@ -15,12 +15,7 @@ from .__about__ import __version__  # pylint: disable=relative-beyond-top-level
 
 
 class AllureGenerator(ActionBase):  # type: ignore  # pylint: disable=too-many-instance-attributes
-    """Generate Allure report from Allure test results to publish it to GitHub Pages.
-
-    Report is generated from Allure results folder specified in action input `allure-results`.
-    And saved to the subfolder in the folder specified in input `allure-report`.
-    Creates index.html in the root of the report folder with redirect to the last report.
-    """
+    """Generate Allure report from Allure test results to publish it to GitHub Pages."""
 
     def __init__(self) -> None:
         print(f"Generate Allure Report action v.{__version__}")
