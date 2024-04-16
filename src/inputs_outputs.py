@@ -12,7 +12,7 @@ from typing import Dict, Iterator, Union, List, Optional
 INPUT_PREFIX = "INPUT_"
 
 
-class InputProxy(MutableMapping[str, str]):  # pylint: disable=unsubscriptable-object
+class ActionInputs(MutableMapping[str, str]):  # pylint: disable=unsubscriptable-object
     """Proxy for GitHub Actions input variables.
 
     Usage:
@@ -55,7 +55,7 @@ class InputProxy(MutableMapping[str, str]):  # pylint: disable=unsubscriptable-o
         raise ValueError("The input property is read-only.")
 
 
-class OutputProxy(MutableMapping[str, str]):  # pylint: disable=unsubscriptable-object
+class ActionOutputs(MutableMapping[str, str]):  # pylint: disable=unsubscriptable-object
     """Proxy for GitHub Actions output variables.
 
     Usage:

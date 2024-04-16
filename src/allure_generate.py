@@ -10,11 +10,11 @@ from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader
 
-from .inputs_outputs import InputProxy, OutputProxy  # pylint: disable=relative-beyond-top-level
+from .action_base import ActionBase  # pylint: disable=relative-beyond-top-level
 from .__about__ import __version__  # pylint: disable=relative-beyond-top-level
 
 
-class AllureGenerator:  # pylint: disable=too-many-instance-attributes
+class AllureGenerator(ActionBase):  # type: ignore  # pylint: disable=too-many-instance-attributes
     """Generate Allure report from Allure test results to publish it to GitHub Pages.
 
     Report is generated from Allure results folder specified in action input `allure-results`.
@@ -66,23 +66,6 @@ class AllureGenerator:  # pylint: disable=too-many-instance-attributes
         base_dir = Path(__file__).resolve().parent
         templates_dir = base_dir / "templates"
         self.environment = Environment(loader=FileSystemLoader(str(templates_dir)))
-
-    @property
-    def output(self) -> OutputProxy:
-        """Get Action Output."""
-        return OutputProxy()
-
-    @property
-    def input(self) -> InputProxy:
-        """Get Action Input."""
-        return InputProxy()
-
-    def get_input_path(self, name: str) -> Path:
-        """Get Action Input value as Path."""
-        path_str = self.input[name]
-        if not path_str:
-            raise ValueError(f"Parameter `{name}` cannot be empty.")
-        return Path(path_str)
 
     def main(self) -> None:
         """Generate Allure report."""
