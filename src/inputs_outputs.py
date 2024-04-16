@@ -1,15 +1,18 @@
-"""Github Actions helper functions."""
+"""Github Actions helper functions.
+
+We want to support Python 3.7 that you still have on some self-hosted action runners.
+So no fancy features like walrus operator, @cached_property, etc.
+"""
 
 import os
 from collections.abc import MutableMapping
-from functools import cached_property
 from pathlib import Path
-from typing import Dict, Iterator
+from typing import Dict, Iterator, Union, List, Optional
 
 INPUT_PREFIX = "INPUT_"
 
 
-class InputProxy(MutableMapping[str, str]):
+class InputProxy(MutableMapping[str, str]):  # pylint: disable=unsubscriptable-object
     """Proxy for GitHub Actions input variables.
 
     Usage:
@@ -23,7 +26,7 @@ class InputProxy(MutableMapping[str, str]):
     """
 
     def __init__(self) -> None:
-        self._input_keys: list[str] | None = None
+        self._input_keys: Union[List[str], None] = None
 
     def __getitem__(self, name: str) -> str:
         # Do not use
@@ -52,7 +55,7 @@ class InputProxy(MutableMapping[str, str]):
         raise ValueError("The input property is read-only.")
 
 
-class OutputProxy(MutableMapping[str, str]):
+class OutputProxy(MutableMapping[str, str]):  # pylint: disable=unsubscriptable-object
     """Proxy for GitHub Actions output variables.
 
     Usage:
@@ -67,41 +70,42 @@ class OutputProxy(MutableMapping[str, str]):
 
     def __init__(self) -> None:
         self.output_file_path: Path = Path(os.environ["GITHUB_OUTPUT"])
+        self._output_keys: Optional[Dict[str, str]] = None
 
     def __getitem__(self, key: str) -> str:
-        return self._output_dict[key]
+        return self._get_output_keys[key]
 
     def __setitem__(self, key: str, value: str) -> None:
-        self._output_dict[key] = value
+        self._get_output_keys[key] = value
         self._save_output_file()
 
     def __delitem__(self, key: str) -> None:
-        del self._output_dict[key]
+        del self._get_output_keys[key]
         self._save_output_file()
 
     def __iter__(self) -> Iterator[str]:
-        return iter(self._output_dict)
+        return iter(self._get_output_keys)
 
     def __len__(self) -> int:
-        return len(self._output_dict)
+        return len(self._get_output_keys)
 
     def __contains__(self, key: object) -> bool:
-        return key in self._output_dict
+        return key in self._get_output_keys
 
-    @cached_property
-    def _output_dict(self) -> Dict[str, str]:
+    @property
+    def _get_output_keys(self) -> Dict[str, str]:
         """Load key-value pairs from a file, returning {} if the file does not exist."""
-        try:
-            content = self.output_file_path.read_text(encoding="utf-8")
-            return dict(
-                (line.split("=", 1) for line in content.splitlines() if "=" in line)
-            )
-        except FileNotFoundError:
-            return {}
+        if self._output_keys is None:
+            try:
+                content = self.output_file_path.read_text(encoding="utf-8")
+                self._output_keys = dict(
+                    (line.split("=", 1) for line in content.splitlines() if "=" in line)
+                )
+            except FileNotFoundError:
+                self._output_keys = {}
+        return self._output_keys
 
     def _save_output_file(self) -> None:
         self.output_file_path.parent.mkdir(parents=True, exist_ok=True)
-        lines: list[str] = [
-            f"{key}={value}" for key, value in self._output_dict.items()
-        ]
+        lines: List[str] = [f"{key}={value}" for key, value in self._get_output_keys.items()]
         self.output_file_path.write_text("\n".join(lines), encoding="utf-8")

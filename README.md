@@ -4,7 +4,8 @@
 
 A GitHub Action that generates a visually stunning Allure test report.
 
-The report also show history of previous tests results with links to them.
+[The report](https://andgineer.github.io/bitwarden-import-msecure/builds/tests/94/index.html#) 
+also show history of previous tests results with links to them.
 
 ## Usage
 
@@ -41,9 +42,9 @@ In case of Python install `allure-pytest` package and use `--alluredir=./allure-
 
 ### Generating Allure report
 
-This is where we use the action.
+This is where we need the action.
 
-`website` is the directory where our website is located, in our case this is `gh-pages-dir`.
+`website` is the directory with our website, in our case this is `gh-pages-dir`.
 
 `reports-site-path` is where the reports located in the website, empty if in root.
 
@@ -80,7 +81,7 @@ For example we can use this action:
         destination_dir: ${{ steps.allure-report.outputs.REPORTS_SITE_PATH }}
 ```
 
-It uses outputs of the previous action so no need to copy&past you settings in it.
+We use outputs of the previous action so no need to copy&past your paths.
 
 # Example
 

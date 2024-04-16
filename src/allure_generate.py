@@ -37,9 +37,7 @@ class AllureGenerator:  # pylint: disable=too-many-instance-attributes
         self.website = self.get_input_path("website")
         self.reports_site_path = self.input["reports-site-path"]
         self.prev_reports = (
-            self.website / self.reports_site_path
-            if self.reports_site_path
-            else self.website
+            self.website / self.reports_site_path if self.reports_site_path else self.website
         )
         self.prev_reports.mkdir(parents=True, exist_ok=True)
         if self.input["reports-site"]:
@@ -115,9 +113,7 @@ class AllureGenerator:  # pylint: disable=too-many-instance-attributes
         In site report folder each report is stored in a separate sub folder.
         """
         reports_folders = [
-            f
-            for f in self.reports_site.glob("*")
-            if f.is_dir() and f.name != "last-history"
+            f for f in self.reports_site.glob("*") if f.is_dir() and f.name != "last-history"
         ]
         print(
             f"Found {len(reports_folders)} report(s) in history, "
@@ -151,9 +147,7 @@ class AllureGenerator:  # pylint: disable=too-many-instance-attributes
     def create_index_html(self) -> None:
         """Create index.html in the report folder root with redirect to the last report."""
         template = self.environment.get_template("index.html")
-        rendered_template = template.render(
-            url=self.last_report_folder_url + "index.html"
-        )
+        rendered_template = template.render(url=self.last_report_folder_url + "index.html")
         (self.reports_site / "index.html").write_text(rendered_template)
 
     def generate_allure_report(self) -> None:
@@ -180,9 +174,7 @@ class AllureGenerator:  # pylint: disable=too-many-instance-attributes
             dirs_exist_ok=True,
         )
 
-        print(
-            f"Generating report from {self.allure_results} to {self.reports_site} ..."
-        )
+        print(f"Generating report from {self.allure_results} to {self.reports_site} ...")
         subprocess.run(
             [
                 "allure",
