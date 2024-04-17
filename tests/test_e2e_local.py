@@ -35,7 +35,7 @@ def test_create_directories(capsys, env, expected_index_file, expected_executor_
                     "--clean",
                     str(allure_gen.allure_results),
                     "-o",
-                    str(allure_gen.reports_site / allure_gen.github_run_number),
+                    str(allure_gen.reports_site / allure_gen.vars.github_run_number),
                 ],
                 check=True,
             )

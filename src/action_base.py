@@ -2,6 +2,7 @@
 
 from pathlib import Path
 
+from .github_vars import GithubVars  # pylint: disable=relative-beyond-top-level
 from .inputs_outputs import ActionOutputs, ActionInputs  # pylint: disable=relative-beyond-top-level
 
 
@@ -24,3 +25,8 @@ class ActionBase:
         if not path_str:
             raise ValueError(f"Parameter `{name}` cannot be empty.")
         return Path(path_str)
+
+    @property
+    def vars(self) -> GithubVars:
+        """Get GitHub Environment Variables."""
+        return GithubVars()

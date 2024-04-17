@@ -20,12 +20,6 @@ class AllureGenerator(ActionBase):  # type: ignore  # pylint: disable=too-many-i
     def __init__(self) -> None:
         print(f"Generate Allure Report action v.{__version__}")
 
-        self.github_repository = os.environ["GITHUB_REPOSITORY"]
-        self.github_repository_owner = os.environ["GITHUB_REPOSITORY_OWNER"]
-        self.github_server_url = os.environ["GITHUB_SERVER_URL"]
-        self.github_run_number = os.environ["GITHUB_RUN_NUMBER"]
-        self.github_run_id = os.environ["GITHUB_RUN_ID"]
-
         # Action inputs
         self.allure_results = self.get_input_path("allure-results")
 
@@ -43,9 +37,9 @@ class AllureGenerator(ActionBase):  # type: ignore  # pylint: disable=too-many-i
 
         self.website_url = self.input["website-url"]
         if not self.website_url:
-            repository_name = self.github_repository.split("/")[-1]  # owner/repo
+            repository_name = self.vars.github_repository.split("/")[-1]  # owner/repo
             self.website_url = (
-                f"https://{self.github_repository_owner}.github.io/{repository_name}"
+                f"https://{self.vars.github_repository_owner}.github.io/{repository_name}"
             )
         self.report_name = self.input["report-name"]
         if self.input["ci-name"]:
@@ -120,7 +114,7 @@ class AllureGenerator(ActionBase):  # type: ignore  # pylint: disable=too-many-i
     @cached_property
     def last_report_folder_url(self) -> str:
         """Get URL to the last report."""
-        return "/".join([self.root_url, self.github_run_number]) + "/"
+        return "/".join([self.root_url, self.vars.github_run_number]) + "/"
 
     def create_index_html(self) -> None:
         """Create index.html in the report folder root with redirect to the last report."""
@@ -136,10 +130,10 @@ class AllureGenerator(ActionBase):  # type: ignore  # pylint: disable=too-many-i
             report_url=self.last_report_folder_url,
             report_name=self.report_name,
             ci_name=self.ci_name,
-            github_run_number=self.github_run_number,
-            github_server_url=self.github_server_url,
-            github_run_id=self.github_run_id,
-            github_repository=self.github_repository,
+            github_run_number=self.vars.github_run_number,
+            github_server_url=self.vars.github_server_url,
+            github_run_id=self.vars.github_run_id,
+            github_repository=self.vars.github_repository,
         )
         (self.allure_results / "executor.json").write_text(rendered_template)
 
@@ -160,13 +154,13 @@ class AllureGenerator(ActionBase):  # type: ignore  # pylint: disable=too-many-i
                 "--clean",
                 str(self.allure_results),
                 "-o",
-                str(self.reports_site / self.github_run_number),
+                str(self.reports_site / self.vars.github_run_number),
             ],
             check=True,
         )
 
         shutil.copytree(
-            self.reports_site / self.github_run_number / "history",
+            self.reports_site / self.vars.github_run_number / "history",
             self.reports_site / "last-history",
             dirs_exist_ok=True,
         )

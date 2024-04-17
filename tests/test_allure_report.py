@@ -107,7 +107,7 @@ def test_website_folder_unexisted(env):
     with patch.dict(os.environ, {"INPUT_WEBSITE": "-unexisted-"}):
         with patch("subprocess.run"):
             gen = AllureGenerator()
-            (gen.reports_site / gen.github_run_number / "history").mkdir(
+            (gen.reports_site / gen.vars.github_run_number / "history").mkdir(
                 parents=True, exist_ok=True
             )
             gen.run()
