@@ -45,6 +45,8 @@ class AllureGenerator(ActionBase):  # type: ignore  # pylint: disable=too-many-i
     """Generate Allure report from Allure test results to publish it to GitHub Pages."""
 
     def __init__(self) -> None:
+        super().__init__(inputs=AllureGeneratorInputs())
+
         print(f"Generate Allure Report action v.{__version__}")
 
         if self.inputs.allure_results is None:
@@ -71,11 +73,6 @@ class AllureGenerator(ActionBase):  # type: ignore  # pylint: disable=too-many-i
         templates_dir = base_dir / "templates"
         self.environment = Environment(loader=FileSystemLoader(str(templates_dir)))
 
-    @property
-    def inputs(self) -> AllureGeneratorInputs:
-        """Get Action Inputs."""
-        return AllureGeneratorInputs()
-
     def main(self) -> None:
         """Generate Allure report."""
         # 1st copy old reports to result directory to make it safe to republish
@@ -86,10 +83,15 @@ class AllureGenerator(ActionBase):  # type: ignore  # pylint: disable=too-many-i
         self.generate_allure_report()
         self.cleanup_reports()
         self.create_index_html()
-        self.output["REPORT_URL"] = f"{self.last_report_folder_url}index.html"
-        self.output["REPORTS_ROOT_URL"] = self.root_url
-        self.output["REPORTS_SITE_PATH"] = self.inputs.reports_site_path
-        self.output["REPORTS_SITE"] = str(self.reports_site)
+        self.outputs["REPORT_URL"] = f"{self.last_report_folder_url}index.html"
+        self.outputs["REPORTS_ROOT_URL"] = self.root_url
+        self.outputs["REPORTS_SITE_PATH"] = self.inputs.reports_site_path
+        self.outputs["REPORTS_SITE"] = str(self.reports_site)
+        print(
+            self.vars.github_step_summary.write_text(
+                "# Allure report generated.\nHave a nice day!"
+            )
+        )
 
     def cleanup_reports(self) -> None:
         """Cleanup old reports if max history reports is set.
@@ -184,5 +186,4 @@ class AllureGenerator(ActionBase):  # type: ignore  # pylint: disable=too-many-i
 
 
 if __name__ == "__main__":  # pragma: no cover
-    generator = AllureGenerator()
-    generator.run()
+    AllureGenerator().run()
