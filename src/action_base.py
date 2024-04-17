@@ -1,5 +1,7 @@
 """Action base."""
 
+import sys
+import traceback
 from pathlib import Path
 
 from .github_vars import GithubVars  # pylint: disable=relative-beyond-top-level
@@ -7,7 +9,10 @@ from .inputs_outputs import ActionOutputs, ActionInputs  # pylint: disable=relat
 
 
 class ActionBase:
-    """Base class for GitHub Actions."""
+    """Base class for GitHub Actions.
+
+    Implement main() method in the subclass.
+    """
 
     @property
     def output(self) -> ActionOutputs:
@@ -30,3 +35,15 @@ class ActionBase:
     def vars(self) -> GithubVars:
         """Get GitHub Environment Variables."""
         return GithubVars()
+
+    def main(self) -> None:
+        """Main method."""
+        raise NotImplementedError
+
+    def run(self) -> None:
+        """Run main method."""
+        try:
+            self.main()
+        except Exception:  # pylint: disable=broad-except
+            traceback.print_exc(file=sys.stderr)
+            sys.exit(1)

@@ -3,8 +3,6 @@
 import os
 import shutil
 import subprocess
-import sys
-import traceback
 from functools import cached_property
 from pathlib import Path
 
@@ -92,14 +90,6 @@ class AllureGenerator(ActionBase):  # type: ignore  # pylint: disable=too-many-i
         self.output["REPORTS_ROOT_URL"] = self.root_url
         self.output["REPORTS_SITE_PATH"] = self.inputs.reports_site_path
         self.output["REPORTS_SITE"] = str(self.reports_site)
-
-    def run(self) -> None:
-        """Run main method."""
-        try:
-            self.main()
-        except Exception:  # pylint: disable=broad-except
-            traceback.print_exc(file=sys.stderr)
-            sys.exit(1)
 
     def cleanup_reports(self) -> None:
         """Cleanup old reports if max history reports is set.
