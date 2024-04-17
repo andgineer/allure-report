@@ -14,16 +14,16 @@ from src.__about__ import __version__
 def test_create_directories(capsys, env, expected_index_file, expected_executor_file):
     allure_gen = AllureGenerator()
     shutil.rmtree(allure_gen.reports_site, ignore_errors=True)
-    (allure_gen.allure_results / "executor.json").unlink(missing_ok=True)
-    shutil.rmtree(allure_gen.allure_results / "history", ignore_errors=True)
+    (allure_gen.inputs.allure_results / "executor.json").unlink(missing_ok=True)
+    shutil.rmtree(allure_gen.inputs.allure_results / "history", ignore_errors=True)
     (allure_gen.reports_site / "1" / "history").mkdir(
         parents=True, exist_ok=True
     )
     with patch("subprocess.run") as mock_subprocess:
         allure_gen.run()
 
-        assert (allure_gen.allure_results / "history" / "history.json").exists(), "History not copied"
-        assert (allure_gen.allure_results / "executor.json").read_text() == expected_executor_file.read()
+        assert (allure_gen.inputs.allure_results / "history" / "history.json").exists(), "History not copied"
+        assert (allure_gen.inputs.allure_results / "executor.json").read_text() == expected_executor_file.read()
         assert (allure_gen.reports_site / "index.html").read_text() == expected_index_file.read()
         assert (allure_gen.reports_site / "22" / "index.html").exists(), "Previous reports not copied"
 
@@ -33,7 +33,7 @@ def test_create_directories(capsys, env, expected_index_file, expected_executor_
                     "allure",
                     "generate",
                     "--clean",
-                    str(allure_gen.allure_results),
+                    str(allure_gen.inputs.allure_results),
                     "-o",
                     str(allure_gen.reports_site / allure_gen.vars.github_run_number),
                 ],
