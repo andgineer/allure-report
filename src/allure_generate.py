@@ -84,10 +84,10 @@ class AllureGenerator(ActionBase):  # type: ignore  # pylint: disable=too-many-i
         self.generate_allure_report()
         self.cleanup_reports()
         self.create_index_html()
-        self.outputs["REPORT_URL"] = f"{self.last_report_folder_url}index.html"
-        self.outputs["REPORTS_ROOT_URL"] = self.root_url
-        self.outputs["REPORTS_SITE_PATH"] = self.inputs.reports_site_path
-        self.outputs["REPORTS_SITE"] = str(self.reports_site)
+        self.outputs["report-url"] = f"{self.last_report_folder_url}index.html"
+        self.outputs["reports-root-url"] = self.root_url
+        self.outputs["reports-site-path"] = self.inputs.reports_site_path
+        self.outputs["reports-site"] = str(self.reports_site)
         self.summary += self.render(self.inputs.summary)  # pylint: disable=no-member
 
     def cleanup_reports(self) -> None:

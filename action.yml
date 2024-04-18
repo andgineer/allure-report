@@ -44,3 +44,12 @@ inputs:
     description: 'Summary text for the action to be shown in the GitHub Actions UI. Set to empty string to disable.'
     required: false
     default: '\n## Test report\n[Allure test report]({{ outputs["REPORT_URL"] }})\n\n'
+outputs:
+  report-url:
+    description: 'URL to the Allure report'
+  reports-site-path:
+    description: 'Copy of input reports-site-path'
+  reports-site:
+    description: 'Folder where the reports located. To be published in `reports-site-path` in your website'
+  reports-root-url:
+    description: 'Root of all reports with index.html that auto-redirect to the last report'

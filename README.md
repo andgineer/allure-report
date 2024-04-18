@@ -2,7 +2,7 @@
 [![Coverage](https://raw.githubusercontent.com/andgineer/allure-report/python-coverage-comment-action-data/badge.svg)](https://htmlpreview.github.io/?https://github.com/andgineer/allure-report/blob/python-coverage-comment-action-data/htmlcov/index.html)
 # GitHub Action to generate Allure Report
 
-Generates a visually stunning [Allure test report](https://andgineer.github.io/bitwarden-import-msecure/builds/tests/94/index.html#).
+Generates a visually stunning [Allure test report](https://andgineer.github.io/bitwarden-import-msecure/builds/tests/).
 The report show history of previous tests results with links to them.
 
 Could be published on the GitHub Pages or any other static web server.
@@ -72,8 +72,8 @@ Note we use `if: always()` to create report even if the tests failed.
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_branch: gh-pages
-        publish_dir: ${{ steps.allure-report.outputs.REPORTS_SITE }}
-        destination_dir: ${{ steps.allure-report.outputs.REPORTS_SITE_PATH }}
+        publish_dir: ${{ steps.allure-report.outputs.reports-site }}
+        destination_dir: ${{ steps.allure-report.outputs.reports-site-path }}
 ```
 
 We use outputs of the previous step so no need to copy&past your paths.
@@ -111,10 +111,10 @@ This is Dockerfile action, so it runs only on Linux runners.
 
 | Name              | Description                                                                              | 
 |-------------------|------------------------------------------------------------------------------------------|
-| REPORT_URL        | URL of the created report                                                                | 
-| REPORTS_ROOT_URL  | Root of all reports with index.html that auto-redirect to the last report                |
-| REPORTS_SITE_PATH | Copy of input reports-site-path                      |
-| REPORTS_SITE | Folder where the reports located. To be published in `reports-site-path` in your website |
+| report-url        | URL of the created report                                                                | 
+| reports-root-url  | Root of all reports with index.html that auto-redirect to the last report                |
+| reports-site-path | Copy of input reports-site-path                      |
+| reports-site | Folder where the reports located. To be published in `reports-site-path` in your website |
 
 ## Working details
 

@@ -128,5 +128,5 @@ def test_summary(env):
             parents=True, exist_ok=True
         )
         gen.run()
-    assert "github.io" in gen.outputs["REPORT_URL"]
-    assert gen.outputs["REPORT_URL"] in gen.vars.github_step_summary.read_text()
+    assert "github.io" in gen.outputs["report-url"]
+    assert gen.outputs["report-url"] in gen.vars.github_step_summary.read_text()
