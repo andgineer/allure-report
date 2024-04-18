@@ -63,7 +63,7 @@ class ActionBase:
 
     def render(self, template: str) -> str:
         """Render template with context including inputs, outputs, and vars."""
-        return Template(template).render(
+        return Template(template.replace("\\n", "\n")).render(
             vars=self.vars,
             inputs=self.inputs,
             outputs=self.outputs,
