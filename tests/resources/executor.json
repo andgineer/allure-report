@@ -1,5 +1,5 @@
 {
-    "name": "GitHub Action: CI",
+    "name": "GitHub Action: CI/CD",
     "type": "github",
     "reportName": "Allure Report",
     "reportUrl": "https://owner.github.io/repo/builds/tests/1/",

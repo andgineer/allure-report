@@ -90,12 +90,6 @@ def test_empty_path_input(env):
             AllureGenerator()
 
 
-def test_default_ci_name(env):
-    with patch.dict(os.environ, {"INPUT_CI-NAME": ""}):
-        gen = AllureGenerator()
-        assert gen.ci_name == "GitHub Action: CI/CD"
-
-
 def test_inplace_reports(env):
     with patch.dict(os.environ, {"INPUT_REPORTS-SITE": ""}):
         gen = AllureGenerator()
@@ -114,3 +108,14 @@ def test_website_folder_unexisted(env):
         assert not (gen.reports_site / "22").exists()
         assert (gen.reports_site / "index.html").exists()
         assert not (gen.reports_site / "22").exists()
+
+
+def test_no_summary(env):
+    with patch.dict(os.environ, {"INPUT_SUMMARY": ""}):
+        with patch("subprocess.run"):
+            gen = AllureGenerator()
+            (gen.reports_site / gen.vars.github_run_number / "history").mkdir(
+                parents=True, exist_ok=True
+            )
+            gen.run()
+        assert gen.vars.github_step_summary.read_text() == ""

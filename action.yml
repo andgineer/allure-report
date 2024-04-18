@@ -35,8 +35,12 @@ inputs:
   ci-name:
     description: 'The name of the CI server'
     required: false
-    default: ''
+    default: 'GitHub Action: {{ vars.github_workflow }}'
   max-reports:
     description: 'Number of previous Allure reports to keep. Set to 0 to keep all reports.'
     required: false
     default: 20
+  summary:
+    description: 'Summary text for the action to be shown in the GitHub Actions UI. Set to empty string to disable.'
+    required: false
+    default: '\n## Test report\n[Allure test report]({{ outputs.report_url }}\n\n'

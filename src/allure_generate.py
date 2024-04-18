@@ -1,6 +1,5 @@
 """Generate Allure report Github Action."""
 
-import os
 import shutil
 import subprocess
 from functools import cached_property
@@ -40,6 +39,9 @@ class AllureGeneratorInputs(ActionInputs):  # type: ignore  # pylint: disable=to
     report_name: str
     """Report name to use in the report."""
 
+    summary: str
+    """Summary of the action."""
+
 
 class AllureGenerator(ActionBase):  # type: ignore  # pylint: disable=too-many-instance-attributes
     """Generate Allure report from Allure test results to publish it to GitHub Pages."""
@@ -64,7 +66,6 @@ class AllureGenerator(ActionBase):  # type: ignore  # pylint: disable=too-many-i
         self.reports_site = self.inputs.reports_site or self.prev_reports
         self.reports_site.mkdir(parents=True, exist_ok=True)
 
-        self.ci_name = self.inputs.ci_name or f"GitHub Action: {os.getenv('GITHUB_WORKFLOW')}"
         self.max_history_reports = int(self.inputs.max_reports or 0)
         if self.max_history_reports < 0:
             raise ValueError("max-reports cannot be negative.")
@@ -87,11 +88,7 @@ class AllureGenerator(ActionBase):  # type: ignore  # pylint: disable=too-many-i
         self.outputs["REPORTS_ROOT_URL"] = self.root_url
         self.outputs["REPORTS_SITE_PATH"] = self.inputs.reports_site_path
         self.outputs["REPORTS_SITE"] = str(self.reports_site)
-        print(
-            self.vars.github_step_summary.write_text(
-                "# Allure report generated.\nHave a nice day!"
-            )
-        )
+        self.summary += self.render(self.inputs.summary)  # pylint: disable=no-member
 
     def cleanup_reports(self) -> None:
         """Cleanup old reports if max history reports is set.
@@ -147,8 +144,8 @@ class AllureGenerator(ActionBase):  # type: ignore  # pylint: disable=too-many-i
         # https://allurereport.org/docs/how-it-works-executor-file/
         rendered_template = template.render(
             report_url=self.last_report_folder_url,
-            report_name=self.inputs.report_name,
-            ci_name=self.ci_name,
+            report_name=self.render(self.inputs.report_name),
+            ci_name=self.render(self.inputs.ci_name),
             github_run_number=self.vars.github_run_number,
             github_server_url=self.vars.github_server_url,
             github_run_id=self.vars.github_run_id,
