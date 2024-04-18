@@ -119,3 +119,14 @@ def test_no_summary(env):
             )
             gen.run()
         assert gen.vars.github_step_summary.read_text() == ""
+
+
+def test_summary(env):
+    with patch("subprocess.run"):
+        gen = AllureGenerator()
+        (gen.reports_site / gen.vars.github_run_number / "history").mkdir(
+            parents=True, exist_ok=True
+        )
+        gen.run()
+    assert "github.io" in gen.outputs["REPORT_URL"]
+    assert gen.outputs["REPORT_URL"] in gen.vars.github_step_summary.read_text()

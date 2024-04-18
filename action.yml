@@ -43,4 +43,4 @@ inputs:
   summary:
     description: 'Summary text for the action to be shown in the GitHub Actions UI. Set to empty string to disable.'
     required: false
-    default: '\n## Test report\n[Allure test report]({{ outputs.report_url }}\n\n'
+    default: '\n## Test report\n[Allure test report]({{ outputs["REPORT_URL"] }})\n\n'

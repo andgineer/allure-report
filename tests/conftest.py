@@ -62,7 +62,7 @@ def env():
             "INPUT_MAX-REPORTS": "20",
             "INPUT_CI-NAME": "GitHub Action: {{vars.github_workflow}}",
             "INPUT_REPORT-NAME": "Allure Report",
-            "INPUT_SUMMARY": "\n  ## Allure test report\n[Allure test report]({{ outputs.report_url }}\n\n"
+            "INPUT_SUMMARY": "\n  ## Allure test report\n[Allure test report]({{ outputs['REPORT_URL'] }})\n\n"
         }
         github_output_path = pathlib.Path(env_vars["GITHUB_OUTPUT"])
         # create github workflow folder for tests

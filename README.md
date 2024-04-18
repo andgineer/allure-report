@@ -105,7 +105,7 @@ This is Dockerfile action, so it runs only on Linux runners.
 | report-name       | The name to be shown on top of the Overview tab in the Allure report                                                                                  | Allure Test Report                                                  |
 | ci-name           | The name of the CI server                                                                                                                             | GitHub Action: {{ vars.github_workflow }}                           |
 | max-reports       | Number of previous Allure reports to keep. Set to 0 to keep all reports.                                                                              | 20                                                                  |
-|   summary | Summary text for the action to be shown in the GitHub Actions UI. Set to empty string to disable. | \n## Test report\n[Allure test report]({{ outputs.report_url }}\n\n |
+|   summary | Summary text for the action to be shown in the GitHub Actions UI. Set to empty string to disable. | \n## Test report\n[Allure test report]({{ outputs["REPORT_URL"] }})\n\n |
 
 ## Outputs
 
