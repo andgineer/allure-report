@@ -5,15 +5,16 @@ import subprocess
 from functools import cached_property
 from pathlib import Path
 
+from github_custom_actions import ActionBase, ActionInputs, ActionOutputs
 from jinja2 import Environment, FileSystemLoader
 
-from .inputs_outputs import ActionInputs  # pylint: disable=relative-beyond-top-level
-from .action_base import ActionBase  # pylint: disable=relative-beyond-top-level
 from .__about__ import __version__  # pylint: disable=relative-beyond-top-level
 
 
 class AllureGeneratorInputs(ActionInputs):  # type: ignore  # pylint: disable=too-few-public-methods
     """Action inputs."""
+
+    # pylint: disable=abstract-method  # we want RO implementation that raises NotImplementedError on write
 
     allure_results: Path
     """Allure results directory."""
@@ -43,11 +44,20 @@ class AllureGeneratorInputs(ActionInputs):  # type: ignore  # pylint: disable=to
     """Summary of the action."""
 
 
+class AllureGeneratorOutputs(ActionOutputs):  # type: ignore  # pylint: disable=too-few-public-methods
+    """Action outputs."""
+
+    report_url: str
+    reports_root_url: str
+    reports_site_path: str
+    reports_site: Path
+
+
 class AllureGenerator(ActionBase):  # type: ignore  # pylint: disable=too-many-instance-attributes
     """Generate Allure report from Allure test results to publish it to GitHub Pages."""
 
     def __init__(self) -> None:
-        super().__init__(inputs=AllureGeneratorInputs())
+        super().__init__(inputs=AllureGeneratorInputs(), outputs=AllureGeneratorOutputs())
 
         print(f"Generate Allure Report action v.{__version__}")
 
@@ -84,10 +94,10 @@ class AllureGenerator(ActionBase):  # type: ignore  # pylint: disable=too-many-i
         self.generate_allure_report()
         self.cleanup_reports()
         self.create_index_html()
-        self.outputs["report-url"] = f"{self.last_report_folder_url}index.html"
-        self.outputs["reports-root-url"] = self.root_url
-        self.outputs["reports-site-path"] = self.inputs.reports_site_path
-        self.outputs["reports-site"] = str(self.reports_site)
+        self.outputs.report_url = f"{self.last_report_folder_url}index.html"
+        self.outputs.reports_root_url = self.root_url
+        self.outputs.reports_site_path = self.inputs.reports_site_path
+        self.outputs.reports_site = str(self.reports_site)
         self.summary += self.render(self.inputs.summary)  # pylint: disable=no-member
 
     def cleanup_reports(self) -> None:

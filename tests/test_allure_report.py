@@ -129,4 +129,6 @@ def test_summary(env):
         )
         gen.run()
     assert "github.io" in gen.outputs["report-url"]
-    assert gen.outputs["report-url"] in gen.vars.github_step_summary.read_text()
+    assert gen.outputs["report-url"] in gen.vars.github_output.read_text()
+    assert f"reports-site-path=builds/tests" in gen.vars.github_output.read_text()
+    assert "reports-root-url=https://owner.github.io/repo" in gen.vars.github_output.read_text()

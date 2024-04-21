@@ -29,9 +29,9 @@ def ver_task_factory(version_type: str):
 def compile_requirements(c: Context):
     "Convert requirements.in to requirements.txt and requirements.dev.txt."
     start_time = subprocess.check_output(["date", "+%s"]).decode().strip()
-    c.run("uv pip compile requirements.in --output-file=requirements.txt")
+    c.run("uv pip compile requirements.in --output-file=requirements.txt --upgrade")
     reqs_time = subprocess.check_output(["date", "+%s"]).decode().strip()
-    c.run("uv pip compile requirements.dev.in --output-file=requirements.dev.txt")
+    c.run("uv pip compile requirements.dev.in --output-file=requirements.dev.txt --upgrade")
     end_time = subprocess.check_output(["date", "+%s"]).decode().strip()
     print(f"Req's compilation time: {int(reqs_time) - int(start_time)} seconds")
     print(f"Req's dev compilation time: {int(end_time) - int(reqs_time)} seconds")
