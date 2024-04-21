@@ -5,12 +5,12 @@
 | Name                        |    Stmts |     Miss |   Cover |   Missing |
 |---------------------------- | -------: | -------: | ------: | --------: |
 | src/\_\_about\_\_.py        |        1 |        0 |    100% |           |
-| src/action\_base.py         |       38 |        7 |     82% |34-36, 54, 60-62 |
-| src/allure\_generate.py     |       92 |        4 |     96% |57, 83, 125, 128 |
-| src/github\_vars.py         |       89 |        0 |    100% |           |
-| src/inputs\_outputs.py      |       64 |        8 |     88% |43, 53, 99-100, 103, 106, 109, 117 |
+| src/action\_base.py         |       38 |       38 |      0% |      3-66 |
+| src/allure\_generate.py     |       96 |        4 |     96% |67, 93, 135, 138 |
+| src/github\_vars.py         |       89 |       89 |      0% |     3-231 |
+| src/inputs\_outputs.py      |       64 |       64 |      0% |     7-127 |
 | src/templates/executor.json |        1 |        0 |    100% |           |
-|                   **TOTAL** |  **285** |   **19** | **93%** |           |
+|                   **TOTAL** |  **289** |  **195** | **33%** |           |
 
 
 ## Setup coverage badge
