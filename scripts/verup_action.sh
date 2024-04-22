@@ -83,3 +83,6 @@ echo "...push"
 git tag $NEW_TAG -m "$COMMIT_MSG"
 git push origin $NEW_TAG
 git push
+
+# Updating local tags
+git fetch --prune --tags
