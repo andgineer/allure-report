@@ -29,7 +29,7 @@ def ver_task_factory(version_type: str):
 def compile_requirements(c: Context):
     "Convert requirements.in to requirements.txt and requirements.dev.txt."
     start_time = subprocess.check_output(["date", "+%s"]).decode().strip()
-    c.run("uv pip compile requirements.in --output-file=requirements.txt --upgrade")
+    c.run("uv pip compile requirements.in --output-file=requirements.txt --upgrade --refresh-package github-custom-actions")
     reqs_time = subprocess.check_output(["date", "+%s"]).decode().strip()
     c.run("uv pip compile requirements.dev.in --output-file=requirements.dev.txt --upgrade")
     end_time = subprocess.check_output(["date", "+%s"]).decode().strip()
@@ -67,6 +67,10 @@ def logs(c):
     """Show the logs of the action."""
     c.run("docker-compose -f tests/resources/docker-compose.yml logs")
 
+@task
+def rm(c):
+    """Show the logs of the action."""
+    c.run("docker-compose -f tests/resources/docker-compose.yml rm -f")
 
 @task
 def container(c):

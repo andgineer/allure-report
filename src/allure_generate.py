@@ -56,8 +56,11 @@ class AllureGeneratorOutputs(ActionOutputs):  # type: ignore  # pylint: disable=
 class AllureGenerator(ActionBase):  # type: ignore  # pylint: disable=too-many-instance-attributes
     """Generate Allure report from Allure test results to publish it to GitHub Pages."""
 
+    inputs: AllureGeneratorInputs
+    outputs: AllureGeneratorOutputs
+
     def __init__(self) -> None:
-        super().__init__(inputs=AllureGeneratorInputs(), outputs=AllureGeneratorOutputs())
+        super().__init__()
 
         print(f"Generate Allure Report action v.{__version__}")
 
@@ -97,7 +100,7 @@ class AllureGenerator(ActionBase):  # type: ignore  # pylint: disable=too-many-i
         self.outputs.report_url = f"{self.last_report_folder_url}index.html"
         self.outputs.reports_root_url = self.root_url
         self.outputs.reports_site_path = self.inputs.reports_site_path
-        self.outputs.reports_site = str(self.reports_site)
+        self.outputs.reports_site = self.reports_site
         self.summary += self.render(self.inputs.summary)  # pylint: disable=no-member
 
     def cleanup_reports(self) -> None:

@@ -2,7 +2,7 @@ import os
 from unittest.mock import MagicMock, patch, PropertyMock
 import pytest
 from pathlib import Path
-from src.allure_generate import AllureGenerator  # Update imports as necessary
+from src.allure_generate import AllureGenerator
 
 
 @pytest.fixture
