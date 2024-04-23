@@ -95,16 +95,16 @@ This is Dockerfile action, so it runs only on Linux runners.
 
 ## Inputs
 
-| Name              | Description                                                                                                                                           | Default                                                             |
-|-------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------|
-| allure-results    | Allure test result directory created by tests.                                                                                                        | allure-results                                                      |
-| website    | Website directory (e.g., checkouted from the gh-pages branch).                                                                                        | gh-pages-dir                                                        |
-| reports-site-path | Allure report path within the website.                                                                                                                | builds/tests                                                        |
-| reports-site      | Allure reports directory, to be pushed to the website repository at the `reports-site-path`. If specified the old reports copied here from `website`. | [create report inplace in `website`/`reports-site-path`]            |
-| website-url       | Custom URL to use instead of the default GitHub Pages URL for the website where Allure report will be published                                       |                                                                     |
-| report-name       | The name to be shown on top of the Overview tab in the Allure report                                                                                  | Allure Test Report                                                  |
-| ci-name           | The name of the CI server                                                                                                                             | GitHub Action: {{ vars.github_workflow }}                           |
-| max-reports       | Number of previous Allure reports to keep. Set to 0 to keep all reports.                                                                              | 20                                                                  |
+| Name              | Description                                                                                                                                           | Default                                                                 |
+|-------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------|
+| allure-results    | Allure test result directory created by tests.                                                                                                        | allure-results                                                          |
+| website    | Website directory (e.g., checkouted from the gh-pages branch).                                                                                        | gh-pages-dir                                                            |
+| reports-site-path | Allure report path within the website.                                                                                                                | builds/tests                                                            |
+| reports-site      | Allure reports directory, to be pushed to the website repository at the `reports-site-path`. If specified the old reports copied here from `website`. | [create report inplace in `website`/`reports-site-path`]                |
+| website-url       | Custom URL to use instead of the default GitHub Pages URL for the website where Allure report will be published                                       |                                                                         |
+| report-name       | The name to be shown on top of the Overview tab in the Allure report                                                                                  | Allure Test Report                                                      |
+| ci-name           | The name of the CI server                                                                                                                             | GitHub Action: {{ env.github_workflow }}                                |
+| max-reports       | Number of previous Allure reports to keep. Set to 0 to keep all reports.                                                                              | 20                                                                      |
 |   summary | Summary text for the action to be shown in the GitHub Actions UI. Set to empty string to disable. | \n## Test report\n[Allure test report]({{ outputs["REPORT_URL"] }})\n\n |
 
 ## Outputs

@@ -101,7 +101,7 @@ def test_website_folder_unexisted(env):
     with patch.dict(os.environ, {"INPUT_WEBSITE": "-unexisted-"}):
         with patch("subprocess.run"):
             gen = AllureGenerator()
-            (gen.reports_site / gen.vars.github_run_number / "history").mkdir(
+            (gen.reports_site / gen.env.github_run_number / "history").mkdir(
                 parents=True, exist_ok=True
             )
             gen.run()
@@ -114,21 +114,21 @@ def test_no_summary(env):
     with patch.dict(os.environ, {"INPUT_SUMMARY": ""}):
         with patch("subprocess.run"):
             gen = AllureGenerator()
-            (gen.reports_site / gen.vars.github_run_number / "history").mkdir(
+            (gen.reports_site / gen.env.github_run_number / "history").mkdir(
                 parents=True, exist_ok=True
             )
             gen.run()
-        assert gen.vars.github_step_summary.read_text() == ""
+        assert gen.env.github_step_summary.read_text() == ""
 
 
 def test_summary(env):
     with patch("subprocess.run"):
         gen = AllureGenerator()
-        (gen.reports_site / gen.vars.github_run_number / "history").mkdir(
+        (gen.reports_site / gen.env.github_run_number / "history").mkdir(
             parents=True, exist_ok=True
         )
         gen.run()
     assert "github.io" in gen.outputs["report-url"]
-    assert gen.outputs["report-url"] in gen.vars.github_output.read_text()
-    assert f"reports-site-path=builds/tests" in gen.vars.github_output.read_text()
-    assert "reports-root-url=https://owner.github.io/repo" in gen.vars.github_output.read_text()
+    assert gen.outputs["report-url"] in gen.env.github_output.read_text()
+    assert f"reports-site-path=builds/tests" in gen.env.github_output.read_text()
+    assert "reports-root-url=https://owner.github.io/repo" in gen.env.github_output.read_text()

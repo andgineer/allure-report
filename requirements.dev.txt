@@ -18,7 +18,7 @@ docker==7.0.0
     # via testcontainers
 filelock==3.13.4
     # via virtualenv
-github-custom-actions==1.3.0
+github-custom-actions==2.0.0
 identify==2.5.36
     # via pre-commit
 idna==3.7
