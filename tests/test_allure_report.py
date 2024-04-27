@@ -10,7 +10,7 @@ def generator(env):  # Utilizes the 'env' fixture for setting up the environment
     # Setup the Path mocking
     with patch('pathlib.Path.glob') as mock_glob, \
             patch('pathlib.Path.mkdir'), \
-            patch('pathlib.Path.unlink', autospec=True) as mock_unlink:
+            patch('shutil.rmtree', autospec=True) as mock_shutil_rmtree:
         reports = []
         for i in range(1, 8):
             report = MagicMock(spec=Path, is_dir=MagicMock(return_value=True))
@@ -31,23 +31,19 @@ def generator(env):  # Utilizes the 'env' fixture for setting up the environment
 
         gen = AllureGenerator()
         gen.max_history_reports = 5
-        yield gen, all_files
+        yield gen, all_files, mock_shutil_rmtree
 
 
 def test_deletion_of_excess_reports(generator):
-    gen, reports = generator
+    gen, reports, mock_shutil_rmtree = generator
     gen.cleanup_reports()
     # Check the number of unlink calls
-    deleted_reports = [report for report in reports if report.unlink.called]
+    deleted_reports = [report for call_args in mock_shutil_rmtree.call_args_list for report in reports if call_args[0][0] == report]
     assert len(deleted_reports) == 2  # 7 reports - 5 allowed = 2 should be deleted
-
-    # Optionally check specific reports
-    assert reports[0].unlink.called  # Assuming report1 is the oldest, based on your sorting logic
-    assert reports[1].unlink.called
 
 
 def test_no_reports_to_delete(generator):
-    gen, reports = generator
+    gen, reports, _ = generator
     # All reports fit within the history limit
     gen.max_history_reports = 7
     gen.cleanup_reports()
@@ -55,7 +51,7 @@ def test_no_reports_to_delete(generator):
 
 
 def test_no_reports_at_all(generator):
-    gen, reports = generator
+    gen, reports, _ = generator
     # Mock no reports being present
     gen.prev_reports.glob.return_value = []
     gen.cleanup_reports()
@@ -63,7 +59,7 @@ def test_no_reports_at_all(generator):
 
 
 def test_non_directory_files(generator):
-    gen, reports = generator
+    gen, reports, _ = generator
     # All files are not directories
     for report in reports:
         report.is_dir.return_value = False
@@ -78,7 +74,7 @@ def test_invalid_max_reports_settings(env):
 
 
 def test_unlimit_reports_settings(generator):
-    gen, reports = generator
+    gen, reports, _ = generator
     gen.max_history_reports = 0
     gen.cleanup_reports()
     assert all(not report.unlink.called for report in reports)
