@@ -14,7 +14,7 @@ def generator(env):  # Utilizes the 'env' fixture for setting up the environment
         reports = []
         for i in range(1, 8):
             report = MagicMock(spec=Path, is_dir=MagicMock(return_value=True))
-            type(report).name = PropertyMock(return_value=f'report{i}')
+            type(report).name = PropertyMock(return_value=str(i))
             mock_stat = MagicMock()
             mock_stat.st_mtime = i  # Use a simple integer for sorting
             report.stat = MagicMock(return_value=mock_stat)

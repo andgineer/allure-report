@@ -4,6 +4,7 @@ import shutil
 import subprocess
 from functools import cached_property
 from pathlib import Path
+import re
 
 from github_custom_actions import ActionBase, ActionInputs, ActionOutputs
 from jinja2 import Environment, FileSystemLoader
@@ -109,7 +110,7 @@ class AllureGenerator(ActionBase):  # type: ignore  # pylint: disable=too-many-i
         In site report folder each report is stored in a separate sub folder.
         """
         reports_folders = [
-            f for f in self.reports_site.glob("*") if f.is_dir() and f.name != "last-history"
+            f for f in self.reports_site.glob("*") if f.is_dir() and re.match(r"^\d+$", f.name)
         ]
         print(
             f"Found {len(reports_folders)} report(s) in history, "
@@ -120,7 +121,7 @@ class AllureGenerator(ActionBase):  # type: ignore  # pylint: disable=too-many-i
             and len(reports_folders)
             > self.max_history_reports  # already excluding index.html and CNAME
         ):
-            reports_folders.sort(key=lambda x: x.stat().st_mtime)
+            reports_folders.sort(key=lambda x: int(x.name))
             excess_count = len(reports_folders) - self.max_history_reports
 
             # Remove the oldest reports which are the first 'excess_count' elements
