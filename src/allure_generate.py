@@ -126,7 +126,7 @@ class AllureGenerator(ActionBase):  # type: ignore  # pylint: disable=too-many-i
             # Remove the oldest reports which are the first 'excess_count' elements
             for report in reports_folders[:excess_count]:
                 print(f"Removing {report.name} ...")
-                report.unlink()
+                shutil.rmtree(report)
 
     @cached_property
     def root_url(self) -> str:
