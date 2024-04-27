@@ -12,7 +12,7 @@ def generator(env):  # Utilizes the 'env' fixture for setting up the environment
             patch('pathlib.Path.mkdir'), \
             patch('shutil.rmtree', autospec=True) as mock_shutil_rmtree:
         reports = []
-        for i in range(1, 8):
+        for i in range(5, 12):
             report = MagicMock(spec=Path, is_dir=MagicMock(return_value=True))
             type(report).name = PropertyMock(return_value=str(i))
             mock_stat = MagicMock()
@@ -40,6 +40,8 @@ def test_deletion_of_excess_reports(generator):
     # Check the number of unlink calls
     deleted_reports = [report for call_args in mock_shutil_rmtree.call_args_list for report in reports if call_args[0][0] == report]
     assert len(deleted_reports) == 2  # 7 reports - 5 allowed = 2 should be deleted
+    assert deleted_reports[0].name == '5'
+    assert deleted_reports[1].name == '6'
 
 
 def test_no_reports_to_delete(generator):
