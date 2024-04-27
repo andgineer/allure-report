@@ -85,4 +85,5 @@ git push origin $NEW_TAG
 git push
 
 # Updating local tags
+git tag -d $NEW_TAG
 git fetch --prune --tags
