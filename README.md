@@ -43,7 +43,7 @@ This is where we need the action.
 
 ```yaml
     - name: Generate Allure test report
-      uses: andgineer/allure-report@v3.1
+      uses: andgineer/allure-report@v3.2
       id: allure-report
       if: always()
       with:
