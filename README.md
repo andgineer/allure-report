@@ -20,10 +20,13 @@ folder `gh-pages-dir` use:
 ```yaml
     - name: Checkout github pages with previous Allure reports
       uses: actions/checkout@v4
+      continue-on-error: true
       with:
         ref: gh-pages
         path: gh-pages-dir
 ```
+
+We use `continue-on-error: true` to not fail the workflow if there are no previous reports.
 
 ### Run tests with writing Allure results
 
