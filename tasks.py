@@ -1,9 +1,15 @@
+import os
+import shutil
 import sys
 
 from invoke import task, Context, Collection
 import subprocess
 
 ALLOWED_VERSION_TYPES = ["release", "bug", "feature"]
+
+DOCKER_NAME = "allure-report"  # default name for Docker image
+DOCKER_FOLDERS = {"": "."}  # <image name>: <build context folder>
+BUILD_TASK_PREFIX = 'build'
 
 
 @task
@@ -81,6 +87,31 @@ def container(c):
     )
 
 
+def docker_build_task_factory(name, target_dir):
+    @task
+    def docker_build(c):
+        """Build Docker image. Place local-specific setup scripts to ../../docker-scripts."""
+        shared_scripts_dir = "../../docker-scripts"
+        scripts_copy_dir = os.path.join(target_dir, '.setup-scripts')
+        try:
+            args = ""
+            if os.path.exists(shared_scripts_dir):
+                os.makedirs(scripts_copy_dir, exist_ok=True)
+                shutil.copytree(shared_scripts_dir, scripts_copy_dir, dirs_exist_ok=True)
+                args += f" --build-arg SSL_CERT_FILE=/usr/local/share/ca-certificates/custom_cacert.crt"
+            args += f" -t {DOCKER_NAME if name == BUILD_TASK_PREFIX else name.split('-')[-1]}"
+            c.run(f"docker build {args} {target_dir}")
+        finally:
+            if os.path.exists(scripts_copy_dir):
+                shutil.rmtree(scripts_copy_dir)
+                pass
+
+    return docker_build
+
+
 namespace = Collection.from_module(sys.modules[__name__])
 for name in ALLOWED_VERSION_TYPES:
     namespace.add_task(ver_task_factory(name), name=f"ver-{name}")
+for name, folder in DOCKER_FOLDERS.items():
+    task_name = f"{BUILD_TASK_PREFIX}-{name}" if name else BUILD_TASK_PREFIX
+    namespace.add_task(docker_build_task_factory(task_name, folder), name=task_name)
