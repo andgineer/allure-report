@@ -9,7 +9,7 @@ import re
 from github_custom_actions import ActionBase, ActionInputs, ActionOutputs
 from jinja2 import Environment, FileSystemLoader
 
-from __about__ import __version__  # pylint: disable=relative-beyond-top-level
+from __about__ import __version__
 
 
 class AllureGeneratorInputs(ActionInputs):  # type: ignore  # pylint: disable=too-few-public-methods
@@ -103,6 +103,7 @@ class AllureGenerator(ActionBase):  # type: ignore  # pylint: disable=too-many-i
         self.outputs.reports_site_path = self.inputs.reports_site_path
         self.outputs.reports_site = self.reports_site
         self.summary += self.render(self.inputs.summary)  # pylint: disable=no-member
+        print(f"Report URL: {self.outputs.report_url}")
 
     def cleanup_reports(self) -> None:
         """Cleanup old reports if max history reports is set.
@@ -128,6 +129,7 @@ class AllureGenerator(ActionBase):  # type: ignore  # pylint: disable=too-many-i
             for report in reports_folders[:excess_count]:
                 print(f"Removing {report.name} ...")
                 shutil.rmtree(report)
+        print("Cleanup done.")
 
     @cached_property
     def root_url(self) -> str:
@@ -194,7 +196,9 @@ class AllureGenerator(ActionBase):  # type: ignore  # pylint: disable=too-many-i
             self.reports_site / "last-history",
             dirs_exist_ok=True,
         )
+        print("Report generated.")
 
 
 if __name__ == "__main__":  # pragma: no cover
     AllureGenerator().run()
+    print("All done.")

@@ -5,10 +5,10 @@ ENV APP_HOME=$PYTHON_SOURCE/app
 ENV PYTHONPATH="$PYTHON_SOURCE:$APP_HOME:$PYTHONPATH"
 
 # Local-specific script to set up corporate proxy etc
-ARG SSL_CERT_FILE
-ENV SSL_CERT_FILE=$SSL_CERT_FILE
-COPY .setup-scripts* /.setup-scripts
-RUN /.setup-scripts/debian.sh || true
+# ARG SSL_CERT_FILE
+# ENV SSL_CERT_FILE=$SSL_CERT_FILE
+# COPY .setup-scripts* /.setup-scripts
+# RUN /.setup-scripts/debian.sh || true
 
 RUN uv pip install requests
 WORKDIR /github/workspace
