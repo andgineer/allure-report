@@ -1,6 +1,7 @@
 import os
 import pathlib
 import shutil
+import sys
 import tempfile
 from unittest.mock import patch
 
@@ -17,6 +18,7 @@ def _get_repo_root_dir() -> str:
 
 ROOT_DIR = _get_repo_root_dir()
 RESOURCES = pathlib.Path(f"{ROOT_DIR}/tests/resources")
+sys.path.append(f"{ROOT_DIR}/src")
 
 
 @pytest.fixture
