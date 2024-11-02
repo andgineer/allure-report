@@ -1,7 +1,8 @@
-FROM andgineer/allure:2.28.0
+FROM andgineer/allure:2.32.0
 
 ENV PYTHON_SOURCE=/generate-allure-report
-ENV PYTHONPATH="$PYTHON_SOURCE:$PYTHONPATH"
+ENV APP_HOME=$PYTHON_SOURCE/app
+ENV PYTHONPATH="$PYTHON_SOURCE:$APP_HOME:$PYTHONPATH"
 
 # Local-specific script to set up corporate proxy etc
 ARG SSL_CERT_FILE
@@ -12,6 +13,6 @@ RUN /.setup-scripts/debian.sh || true
 RUN uv pip install requests
 WORKDIR /github/workspace
 
-COPY src/ $PYTHON_SOURCE/app/
+COPY src/ $APP_HOME
 
 ENTRYPOINT python -m app.allure_generate

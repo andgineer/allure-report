@@ -9,7 +9,7 @@ import re
 from github_custom_actions import ActionBase, ActionInputs, ActionOutputs
 from jinja2 import Environment, FileSystemLoader
 
-from .__about__ import __version__  # pylint: disable=relative-beyond-top-level
+from __about__ import __version__  # pylint: disable=relative-beyond-top-level
 
 
 class AllureGeneratorInputs(ActionInputs):  # type: ignore  # pylint: disable=too-few-public-methods
