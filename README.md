@@ -1,6 +1,7 @@
 [![Build Status](https://github.com/andgineer/allure-report/workflows/CI/badge.svg)](https://github.com/andgineer/allure-report/actions)
 [![Coverage](https://raw.githubusercontent.com/andgineer/allure-report/python-coverage-comment-action-data/badge.svg)](https://htmlpreview.github.io/?https://github.com/andgineer/allure-report/blob/python-coverage-comment-action-data/htmlcov/index.html)
-# GitHub Action to generate Allure Report
+
+# GitHub Action for Allure Report Generation
 
 Generates a visually stunning [Allure test report](https://andgineer.github.io/bitwarden-import-msecure/builds/tests/).
 The report show history of previous tests results with links to them.
@@ -11,8 +12,7 @@ Could be published on the GitHub Pages or any other static web server.
 
 ### Checkout git hub pages
 
-We can skip the step if we don't want to show the history of
-tests in the Allure report.
+Skip this step if you don't need test history in your Allure report.
 
 If your github pages are in default `gh-pages` branch, to checkout them to
 folder `gh-pages-dir` use:
@@ -26,21 +26,21 @@ folder `gh-pages-dir` use:
         path: gh-pages-dir
 ```
 
-We use `continue-on-error: true` to not fail the workflow if there are no previous reports.
+The `continue-on-error: true` flag prevents workflow failure if no previous reports exist.
 
-### Run tests with writing Allure results
+### Run tests with saving Allure results
 
-In case of Python install `allure-pytest` package and use `--alluredir=./allure-results` option to save results to 
-`allure-results` folder.
+For Python projects:
 
 ```yaml
-    - name: Install pytest Allure plugin
-      run: pip install pytest allure-pytest
-    - name: Test with generating Allure results
-      run: pytest --alluredir=./allure-results tests/
+- name: Install pytest Allure plugin
+  run: pip install pytest allure-pytest
+
+- name: Run tests with Allure results
+  run: pytest --alluredir=./allure-results tests/
 ```
 
-### Generating Allure report
+### Generate Allure Report
 
 This is where we need the action.
 
@@ -83,20 +83,22 @@ We use outputs of the previous step so no need to copy&past your paths.
 
 #### Example
 
-See full example in the
-[test with report workflow](https://github.com/andgineer/bitwarden-import-msecure/blob/main/.github/workflows/ci.yml)
+See a complete example in our [test with report workflow](https://github.com/andgineer/bitwarden-import-msecure/blob/main/.github/workflows/ci.yml).
 
-#### Important note
+### Important Notes
 
-If you also publish some site to the same github pages, make sure you backup the reports 
-so the site publishing won't delete them.
-See example in [creating docs with reports backup](https://github.com/andgineer/bitwarden-import-msecure/blob/main/.github/workflows/docs.yml)
+- When publishing other content to the same GitHub Pages:
+  - Back up your test reports
+  - Use the "concurrency" option to prevent parallel runs
+  - See example: [creating docs with reports backup](https://github.com/andgineer/bitwarden-import-msecure/blob/main/.github/workflows/docs.yml)
 
 ## Limitations
 
-This is Dockerfile action, so it runs only on Linux runners.
+This action uses Docker and is compatible only with Linux runners.
 
-## Inputs
+## Configuration
+
+### Inputs
 
 | Name              | Description                                                                                                                                           | Default                                                                 |
 |-------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------|
@@ -110,7 +112,7 @@ This is Dockerfile action, so it runs only on Linux runners.
 | max-reports       | Number of previous Allure reports to keep. Set to 0 to keep all reports.                                                                              | 20                                                                      |
 |   summary | Summary text for the action to be shown in the GitHub Actions UI. Set to empty string to disable. | \n## Test report\n[Allure test report]({{ outputs["REPORT_URL"] }})\n\n |
 
-## Outputs
+### Outputs
 
 | Name              | Description                                                                              | 
 |-------------------|------------------------------------------------------------------------------------------|
