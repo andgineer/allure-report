@@ -59,6 +59,7 @@ def env():
             "INPUT_ALLURE-RESULTS": str(temp_path / 'resources/allure-results'),
             "INPUT_WEBSITE": str(temp_path / 'resources/gh-pages-dir'),
             "INPUT_REPORTS-SITE-PATH": "builds/tests",
+            "INPUT_REPORT-PAGE": "behaviors",
             "INPUT_REPORTS-SITE": str(temp_path / 'resources/temp/reports-site'),
             "INPUT_WEBSITE-URL": "",
             "INPUT_MAX-REPORTS": "20",

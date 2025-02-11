@@ -29,6 +29,9 @@ class AllureGeneratorInputs(ActionInputs):  # type: ignore  # pylint: disable=to
     reports_site: Path
     """Reports site folder."""
 
+    report_page: str
+    """Allure report page to be opened by default."""
+
     website_url: str
     """Website URL to replace github-pages.io URL with."""
 
@@ -98,7 +101,7 @@ class AllureGenerator(ActionBase):  # type: ignore  # pylint: disable=too-many-i
         self.generate_allure_report()
         self.cleanup_reports()
         self.create_index_html()
-        self.outputs.report_url = f"{self.last_report_folder_url}index.html"
+        self.outputs.report_url = f"{self.last_report_folder_url}index.html{self.report_page()}"
         self.outputs.reports_root_url = self.root_url
         self.outputs.reports_site_path = self.inputs.reports_site_path
         self.outputs.reports_site = self.reports_site
@@ -148,10 +151,16 @@ class AllureGenerator(ActionBase):  # type: ignore  # pylint: disable=too-many-i
         """Get URL to the last report."""
         return "/".join([self.root_url, self.env.github_run_number]) + "/"
 
+    def report_page(self) -> str:
+        """Get the report page part of the url."""
+        return f"#{self.inputs.report_page}" if self.inputs.report_page else ""
+
     def create_index_html(self) -> None:
         """Create index.html in the report folder root with redirect to the last report."""
         template = self.environment.get_template("index.html")
-        rendered_template = template.render(url=f"{self.last_report_folder_url}index.html")
+        rendered_template = template.render(
+            url=f"{self.last_report_folder_url}index.html{self.report_page()}"
+        )
         (self.reports_site / "index.html").write_text(rendered_template)
 
     def generate_allure_report(self) -> None:

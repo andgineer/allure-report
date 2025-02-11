@@ -28,6 +28,19 @@ inputs:
     description: 'Custom URL to use instead of the default GitHub Pages URL for the website where Allure report will be published'
     required: false
     default: ''
+  report-page:
+    description: 'Allure report page to be opened by default with the output `report-url`'
+    default: 'behaviors'
+    required: true
+    type: choice
+    options:
+      - overview
+      - categories
+      - suites
+      - graphs
+      - timeline
+      - behaviors
+      - packages
   report-name:
     description: 'The name to be shown on top of the Overview tab in the Allure report'
     required: false

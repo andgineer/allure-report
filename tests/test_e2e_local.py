@@ -45,5 +45,5 @@ def test_create_directories(capsys, env, expected_index_file, expected_executor_
         captured = capsys.readouterr().out
         assert __version__ in captured, f"Expected a call with `{__version__}` not found in print calls"
 
-        last_report_url = "https://owner.github.io/repo/builds/tests/1/index.html"
+        last_report_url = "https://owner.github.io/repo/builds/tests/1/index.html#behavior"
         assert f"report-url={last_report_url}" in Path(os.environ["GITHUB_OUTPUT"]).read_text()
