@@ -46,7 +46,7 @@ This is where we need the action.
 
 ```yaml
     - name: Generate Allure test report
-      uses: andgineer/allure-report@v3.4
+      uses: andgineer/allure-report@v3.5
       id: allure-report
       if: always()
       with:
