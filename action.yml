@@ -1,68 +1,59 @@
-name: 'generate-allure-report'
-description: 'Generate Allure Report'
-author: 'Andrey Sorokin'
+name: "generate-allure-report"
+description: "Generate Allure Report"
+author: "Andrey Sorokin"
 branding:
-  icon: 'bar-chart'
-  color: 'yellow'
+  icon: "bar-chart"
+  color: "yellow"
 runs:
-  using: 'docker'
-  image: 'Dockerfile'
+  using: "docker"
+  image: "Dockerfile"
 inputs:
   allure-results:
-    description: 'Allure test result directory created by tests.'
+    description: "Allure test result directory created by tests."
     required: true
-    default: 'allure-results'
+    default: "allure-results"
   website:
-    description: 'Website directory (e.g., checkouted from the gh-pages branch).'
+    description: "Website directory (e.g., checkouted from the gh-pages branch)."
     required: true
-    default: 'gh-pages-dir'
+    default: "gh-pages-dir"
   reports-site-path:
-    description: 'Allure report path within the website.'
+    description: "Allure report path within the website."
     required: false
-    default: 'builds/tests'
+    default: "builds/tests"
   reports-site:
-    description: 'Allure reports directory, to be pushed to the website repository at the `reports-site-path`. Each report on the subfolder with the github run number. If specified the old reports copied from `website`. By default create report inplace in `website`/`reports-site-path`.'
+    description: "Allure reports directory, to be pushed to the website repository at the `reports-site-path`. Each report on the subfolder with the github run number. If specified the old reports copied from `website`. By default create report inplace in `website`/`reports-site-path`."
     required: true
-    default: ''
+    default: ""
   website-url:
-    description: 'Custom URL to use instead of the default GitHub Pages URL for the website where Allure report will be published'
+    description: "Custom URL to use instead of the default GitHub Pages URL for the website where Allure report will be published"
     required: false
-    default: ''
+    default: ""
   report-page:
-    description: 'Allure report page to be opened by default with the output `report-url`'
-    default: 'behaviors'
+    description: "Allure report page to be opened by default with the output `report-url`"
+    default: "behaviors"
     required: true
-    type: choice
-    options:
-      - overview
-      - categories
-      - suites
-      - graphs
-      - timeline
-      - behaviors
-      - packages
   report-name:
-    description: 'The name to be shown on top of the Overview tab in the Allure report'
+    description: "The name to be shown on top of the Overview tab in the Allure report"
     required: false
-    default: 'Allure Test Report'
+    default: "Allure Test Report"
   ci-name:
-    description: 'The name of the CI server'
+    description: "The name of the CI server"
     required: false
-    default: 'GitHub Action: {{ env.github_workflow }}'
+    default: "GitHub Action: {{ env.github_workflow }}"
   max-reports:
-    description: 'Number of previous Allure reports to keep. Set to 0 to keep all reports.'
+    description: "Number of previous Allure reports to keep. Set to 0 to keep all reports."
     required: false
-    default: 20
+    default: "20"
   summary:
-    description: 'Summary text for the action to be shown in the GitHub Actions UI. Set to empty string to disable.'
+    description: "Summary text for the action to be shown in the GitHub Actions UI. Set to empty string to disable."
     required: false
     default: '\n## Test report\n[Allure test report]({{ outputs["report-url"] }})\n\n'
 outputs:
   report-url:
-    description: 'URL to the Allure report'
+    description: "URL to the Allure report"
   reports-site-path:
-    description: 'Copy of input reports-site-path'
+    description: "Copy of input reports-site-path"
   reports-site:
-    description: 'Folder where the reports located. To be published in `reports-site-path` in your website'
+    description: "Folder where the reports located. To be published in `reports-site-path` in your website"
   reports-root-url:
-    description: 'Root of all reports with index.html that auto-redirect to the last report'
+    description: "Root of all reports with index.html that auto-redirect to the last report"
