@@ -101,7 +101,7 @@ class AllureGenerator(ActionBase):  # type: ignore  # pylint: disable=too-many-i
         self.generate_allure_report()
         self.cleanup_reports()
         self.create_index_html()
-        self.outputs.report_url = f"{self.last_report_folder_url}{self.report_page()}"
+        self.outputs.report_url = f"{self.last_report_file_url}{self.report_page()}"
         self.outputs.reports_root_url = self.root_url
         self.outputs.reports_site_path = self.inputs.reports_site_path
         self.outputs.reports_site = self.reports_site
@@ -147,7 +147,7 @@ class AllureGenerator(ActionBase):  # type: ignore  # pylint: disable=too-many-i
         return url
 
     @cached_property
-    def last_report_folder_url(self) -> str:
+    def last_report_file_url(self) -> str:
         """Get URL to the last report."""
         return "/".join([self.root_url, self.env.github_run_number]) + "/index.html"
 
@@ -158,9 +158,7 @@ class AllureGenerator(ActionBase):  # type: ignore  # pylint: disable=too-many-i
     def create_index_html(self) -> None:
         """Create index.html in the report folder root with redirect to the last report."""
         template = self.environment.get_template("index.html")
-        rendered_template = template.render(
-            url=f"{self.last_report_folder_url}{self.report_page()}"
-        )
+        rendered_template = template.render(url=f"{self.last_report_file_url}{self.report_page()}")
         (self.reports_site / "index.html").write_text(rendered_template)
 
     def generate_allure_report(self) -> None:
@@ -168,7 +166,7 @@ class AllureGenerator(ActionBase):  # type: ignore  # pylint: disable=too-many-i
         template = self.environment.get_template("executor.json")
         # https://allurereport.org/docs/how-it-works-executor-file/
         rendered_template = template.render(
-            report_url=self.last_report_folder_url,
+            report_url=self.last_report_file_url,
             report_name=self.render(self.inputs.report_name),
             ci_name=self.render(self.inputs.ci_name),
             github_run_number=self.env.github_run_number,
