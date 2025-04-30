@@ -2,7 +2,7 @@
     "name": "GitHub Action: CI/CD",
     "type": "github",
     "reportName": "Allure Report",
-    "reportUrl": "https://owner.github.io/repo/builds/tests/1/",
+    "reportUrl": "https://owner.github.io/repo/builds/tests/1/index.html",
     "buildUrl": "https://github.com/owner/repo/actions/runs/1",
     "buildName": "GitHub Actions Run #1",
     "buildOrder": "1"
