@@ -1,10 +1,10 @@
 """Generate Allure report Github Action."""
 
+import re
 import shutil
 import subprocess
 from functools import cached_property
 from pathlib import Path
-import re
 
 from github_custom_actions import ActionBase, ActionInputs, ActionOutputs
 from jinja2 import Environment, FileSystemLoader
@@ -118,7 +118,7 @@ class AllureGenerator(ActionBase):  # type: ignore  # pylint: disable=too-many-i
         ]
         print(
             f"Found {len(reports_folders)} report(s) in history, "
-            f"keeping {self.max_history_reports}"
+            f"keeping {self.max_history_reports}",
         )
         if (
             self.max_history_reports

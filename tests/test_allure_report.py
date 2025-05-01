@@ -8,9 +8,11 @@ from src.allure_generate import AllureGenerator
 @pytest.fixture
 def generator(env):  # Utilizes the 'env' fixture for setting up the environment
     # Setup the Path mocking
-    with patch('pathlib.Path.glob') as mock_glob, \
-            patch('pathlib.Path.mkdir'), \
-            patch('shutil.rmtree', autospec=True) as mock_shutil_rmtree:
+    with (
+        patch("pathlib.Path.glob") as mock_glob,
+        patch("pathlib.Path.mkdir"),
+        patch("shutil.rmtree", autospec=True) as mock_shutil_rmtree,
+    ):
         reports = []
         for i in range(5, 12):
             report = MagicMock(spec=Path, is_dir=MagicMock(return_value=True))
@@ -20,11 +22,9 @@ def generator(env):  # Utilizes the 'env' fixture for setting up the environment
             report.stat = MagicMock(return_value=mock_stat)
             reports.append(report)
 
-        exclusions = [
-            MagicMock(spec=Path, is_dir=MagicMock(return_value=False)) for _ in range(2)
-        ]
-        type(exclusions[0]).name = PropertyMock(return_value='index.html')
-        type(exclusions[1]).name = PropertyMock(return_value='CNAME')
+        exclusions = [MagicMock(spec=Path, is_dir=MagicMock(return_value=False)) for _ in range(2)]
+        type(exclusions[0]).name = PropertyMock(return_value="index.html")
+        type(exclusions[1]).name = PropertyMock(return_value="CNAME")
 
         all_files = reports + exclusions
         mock_glob.return_value = all_files
@@ -38,10 +38,15 @@ def test_deletion_of_excess_reports(generator):
     gen, reports, mock_shutil_rmtree = generator
     gen.cleanup_reports()
     # Check the number of unlink calls
-    deleted_reports = [report for call_args in mock_shutil_rmtree.call_args_list for report in reports if call_args[0][0] == report]
+    deleted_reports = [
+        report
+        for call_args in mock_shutil_rmtree.call_args_list
+        for report in reports
+        if call_args[0][0] == report
+    ]
     assert len(deleted_reports) == 2  # 7 reports - 5 allowed = 2 should be deleted
-    assert deleted_reports[0].name == '5'
-    assert deleted_reports[1].name == '6'
+    assert deleted_reports[0].name == "5"
+    assert deleted_reports[1].name == "6"
 
 
 def test_no_reports_to_delete(generator):
@@ -128,5 +133,5 @@ def test_summary(env):
         gen.run()
     assert "github.io" in gen.outputs["report-url"]
     assert gen.outputs["report-url"] in gen.env.github_output.read_text()
-    assert f"reports-site-path=builds/tests" in gen.env.github_output.read_text()
+    assert "reports-site-path=builds/tests" in gen.env.github_output.read_text()
     assert "reports-root-url=https://owner.github.io/repo" in gen.env.github_output.read_text()

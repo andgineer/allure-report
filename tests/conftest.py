@@ -44,7 +44,7 @@ def env():
     with tempfile.TemporaryDirectory() as temp_dir:
         temp_path = pathlib.Path(temp_dir)
         # Copy all contents of RESOURCES to the temporary directory
-        shutil.copytree(RESOURCES, temp_path / 'resources', dirs_exist_ok=True)
+        shutil.copytree(RESOURCES, temp_path / "resources", dirs_exist_ok=True)
 
         # Setup the environment variables to use paths in the temporary directory
         env_vars = {
@@ -54,18 +54,18 @@ def env():
             "GITHUB_RUN_NUMBER": "1",
             "GITHUB_RUN_ID": "1",
             "GITHUB_WORKFLOW": "CI/CD",
-            "GITHUB_OUTPUT": str(temp_path / 'github/workflow/output'),
-            "GITHUB_STEP_SUMMARY": str(temp_path / 'github/workflow/summary'),
-            "INPUT_ALLURE-RESULTS": str(temp_path / 'resources/allure-results'),
-            "INPUT_WEBSITE": str(temp_path / 'resources/gh-pages-dir'),
+            "GITHUB_OUTPUT": str(temp_path / "github/workflow/output"),
+            "GITHUB_STEP_SUMMARY": str(temp_path / "github/workflow/summary"),
+            "INPUT_ALLURE-RESULTS": str(temp_path / "resources/allure-results"),
+            "INPUT_WEBSITE": str(temp_path / "resources/gh-pages-dir"),
             "INPUT_REPORTS-SITE-PATH": "builds/tests",
             "INPUT_REPORT-PAGE": "behaviors",
-            "INPUT_REPORTS-SITE": str(temp_path / 'resources/temp/reports-site'),
+            "INPUT_REPORTS-SITE": str(temp_path / "resources/temp/reports-site"),
             "INPUT_WEBSITE-URL": "",
             "INPUT_MAX-REPORTS": "20",
             "INPUT_CI-NAME": "GitHub Action: {{env.github_workflow}}",
             "INPUT_REPORT-NAME": "Allure Report",
-            "INPUT_SUMMARY": "\n  ## Allure test report\n[Allure test report]({{ outputs['report-url'] }})\n\n"
+            "INPUT_SUMMARY": "\n  ## Allure test report\n[Allure test report]({{ outputs['report-url'] }})\n\n",
         }
         github_output_path = pathlib.Path(env_vars["GITHUB_OUTPUT"])
         # create github workflow folder for tests

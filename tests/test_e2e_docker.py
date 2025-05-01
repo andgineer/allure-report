@@ -2,11 +2,13 @@
 
 With real allure generate call.
 """
+
 import shutil
 import docker
 import pytest
 
 from tests.conftest import RESOURCES
+
 
 @pytest.fixture
 def report_dir():
@@ -17,42 +19,34 @@ def report_dir():
     (RESOURCES / "allure-results" / "executor.json").unlink(missing_ok=True)
     shutil.rmtree(RESOURCES / "allure-results" / "history", ignore_errors=True)
 
+
 @pytest.mark.docker
 def test_allure_generate_docker(report_dir):
     client = docker.from_env()
 
     # Build the image
-    image, _ = client.images.build(
-        path=".",
-        tag="allure-test"
-    )
+    image, _ = client.images.build(path=".", tag="allure-test")
 
     # Set up volume bindings equivalent to docker-compose
     volumes = {
         str(RESOURCES / "allure-results"): {
-            'bind': '/github/workspace/allure-results',
-            'mode': 'rw'
+            "bind": "/github/workspace/allure-results",
+            "mode": "rw",
         },
-        str(RESOURCES / "gh-pages-dir"): {
-            'bind': '/github/workspace/gh-pages-dir',
-            'mode': 'rw'
-        },
+        str(RESOURCES / "gh-pages-dir"): {"bind": "/github/workspace/gh-pages-dir", "mode": "rw"},
         str(RESOURCES / "temp/reports-site"): {
-            'bind': '/github/workspace/reports-site',
-            'mode': 'rw'
+            "bind": "/github/workspace/reports-site",
+            "mode": "rw",
         },
-        str(RESOURCES / "temp/workflow"): {
-            'bind': '/github/workflow',
-            'mode': 'rw'
-        }
+        str(RESOURCES / "temp/workflow"): {"bind": "/github/workflow", "mode": "rw"},
     }
 
     # Read environment variables from .env file
     with open(RESOURCES / ".env") as f:
         env_vars = dict(
-            line.strip().split('=', 1)
+            line.strip().split("=", 1)
             for line in f
-            if line.strip() and not line.strip().startswith('#')
+            if line.strip() and not line.strip().startswith("#")
         )
 
     try:
@@ -62,15 +56,15 @@ def test_allure_generate_docker(report_dir):
             detach=True,
             volumes=volumes,
             environment=env_vars,
-            working_dir="/github/workspace"
+            working_dir="/github/workspace",
         )
 
         # Wait for container to finish and get logs
         result = container.wait()
-        logs = container.logs().decode('utf-8')
+        logs = container.logs().decode("utf-8")
         print(logs)
 
-        if result['StatusCode'] != 0:
+        if result["StatusCode"] != 0:
             raise Exception(f"Container exited with error: {logs}")
 
         # Verify the results
@@ -82,11 +76,11 @@ def test_allure_generate_docker(report_dir):
 
     except Exception as e:
         print(f"Error: {e}")
-        if 'container' in locals():
+        if "container" in locals():
             print(f"Container logs: {container.logs().decode('utf-8')}")
         raise
 
     finally:
         # Cleanup
-        if 'container' in locals():
+        if "container" in locals():
             container.remove(force=True)
