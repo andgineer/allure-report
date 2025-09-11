@@ -4,9 +4,9 @@
 # GitHub Action for Allure Report Generation
 
 Generates a visually stunning [Allure test report](https://andgineer.github.io/bitwarden-import-msecure/builds/tests/).
-The report show history of previous tests results with links to them.
+The report shows history of previous test results with links to them.
 
-Could be published on the GitHub Pages or any other static web server.
+Can be published on GitHub Pages or any other static web server.
 
 ## Usage
 
@@ -14,7 +14,7 @@ Could be published on the GitHub Pages or any other static web server.
 
 Skip this step if you don't need test history in your Allure report.
 
-If your GitHub Pages are in default `gh-pages` branch, to checkout them to
+If your GitHub Pages are in the default `gh-pages` branch, to check them out to
 folder `gh-pages-dir` use:
 
 ```yaml
@@ -57,13 +57,13 @@ This is where we need the action.
 
 `website` is the directory with our website.
 
-`reports-site-path` is where the reports located in the website, empty if in root.
+`reports-site-path` is where the reports are located in the website, empty if in root.
 
-The Allure report will be created inplace in the `website` / `reports-site-path`, in separate folder named after the GitHub workflow run number.
+The Allure report will be created in place in the `website` / `reports-site-path`, in a separate folder named after the GitHub workflow run number.
 
-In the root of `website` / `reports-site-path` will be created `index.html` that auto-redirect to the last report.
+In the root of `website` / `reports-site-path` will be created `index.html` that auto-redirects to the last report.
 
-Note we use `if: always()` to create report even if the tests failed.
+Note we use `if: always()` to create the report even if the tests failed.
 
 ### Publish the report back to the GitHub Pages
 
@@ -78,7 +78,7 @@ Note we use `if: always()` to create report even if the tests failed.
     destination_dir: ${{ steps.allure-report.outputs.reports-site-path }}
 ```
 
-We use outputs of the previous step so no need to copy&past your paths.
+We use outputs from the previous step so there's no need to copy and paste your paths.
 
 #### Example
 
@@ -102,9 +102,9 @@ This action uses Docker and is compatible only with Linux runners.
 | Name              | Description                                                                                                                                           | Default                                                                 |
 | ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
 | allure-results    | Allure test result directory created by tests.                                                                                                        | allure-results                                                          |
-| website           | Website directory (e.g., checkouted from the gh-pages branch).                                                                                        | gh-pages-dir                                                            |
+| website           | Website directory (e.g., checked out from the gh-pages branch).                                                                                       | gh-pages-dir                                                            |
 | reports-site-path | Allure report path within the website.                                                                                                                | builds/tests                                                            |
-| reports-site      | Allure reports directory, to be pushed to the website repository at the `reports-site-path`. If specified the old reports copied here from `website`. | [create report inplace in `website`/`reports-site-path`]                |
+| reports-site      | Allure reports directory, to be pushed to the website repository at the `reports-site-path`. If specified, the old reports are copied here from `website`. | [create report in place in `website`/`reports-site-path`]                |
 | report-page       | Allure report page to be opened by default with the output `report-url` (graphs, timeline, behaviors etc)                                             | behaviors                                                               |
 | website-url       | Custom URL to use instead of the default GitHub Pages URL for the website where Allure report will be published                                       |                                                                         |
 | report-name       | The name to be shown on top of the Overview tab in the Allure report                                                                                  | Allure Test Report                                                      |
@@ -117,30 +117,30 @@ This action uses Docker and is compatible only with Linux runners.
 | Name              | Description                                                                              |
 | ----------------- | ---------------------------------------------------------------------------------------- |
 | report-url        | URL of the created report                                                                |
-| reports-root-url  | Root of all reports with index.html that auto-redirect to the last report                |
+| reports-root-url  | Root of all reports with index.html that auto-redirects to the last report                |
 | reports-site-path | Copy of input reports-site-path                                                          |
-| reports-site      | Folder where the reports located. To be published in `reports-site-path` in your website |
+| reports-site      | Folder where the reports are located. To be published in `reports-site-path` in your website |
 
 ## Working details
 
-Report is generated from [Allure results](https://allurereport.org/docs/how-it-works/)
+The report is generated from the [Allure results](https://allurereport.org/docs/how-it-works/)
 folder specified in `allure-results`.
 
-Read the Allure docs to know how to create them.
-For example, in Python, you can use `allure-pytest` package.
-It adds to `pytest` option `--alluredir`.
-So to generate Allure results in `allure-pytest`, use `pytest --alluredir=./allure-results`.
+Read the Allure docs to learn how to create them.
+For example, in Python, you can use the `allure-pytest` package.
+It adds the `--alluredir` option to `pytest`.
+So to generate Allure results with `allure-pytest`, use `pytest --alluredir=./allure-results`.
 
-History reports expected in `website` / `reports-site-path`.
+History reports are expected in `website` / `reports-site-path`.
 
-If `allure-report` is specified, the history reports is copied to it and the new report generated in it.
-Otherwise, the report is generated inplace in the `website` / `reports-site-path`.
+If `allure-report` is specified, the history reports are copied to it and the new report is generated in it.
+Otherwise, the report is generated in place in the `website` / `reports-site-path`.
 
 Each report is stored in a unique folder named after the GitHub workflow run number.
 
-In the root of the reports folder the action creates `index.html` with redirect to the last report.
+In the root of the reports folder, the action creates `index.html` with a redirect to the last report.
 
-All specified in action input folders could do not exist, they will be created if needed.
+All folders specified in the action inputs do not need to exist; they will be created if needed.
 
 ## Development
 
@@ -148,25 +148,25 @@ To create/activate a virtual environment (note the space between the two dots):
 
     . ./activate.sh
 
-For formatting and linting install pre-commit hooks:
+For formatting and linting, install pre-commit hooks:
 
     pre-commit install
 
-Tests uses local docker-compose to run the action.
-It sets env vars like in Github action environment (from `tests/resources/.env` file)
+Tests use local docker-compose to run the action.
+It sets env vars like in the GitHub Actions environment (from `tests/resources/.env` file)
 
-python -m pytest tests/
+    python -m pytest tests/
 
-You can run the action in the Docker locally with:
+You can run the action locally in Docker with:
 
     inv run
     inv logs
 
-for experiments inside the container use:
+For experiments inside the container use:
 
     inv container
 
-All the commands
+All available commands:
 
     inv --list
 
