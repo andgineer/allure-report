@@ -16,23 +16,34 @@ This is a GitHub Action for generating Allure test reports from Allure test resu
 
 ## Common Development Commands
 
+### Environment Setup
+```bash
+# Set up or activate development environment
+source ./activate.sh
+```
+
+**IMPORTANT**: Always activate the virtual environment before running any commands. Use `source ./activate.sh` before each command.
+
 ### Build and Test
 ```bash
 # Install dependencies
-pip install -r requirements.dev.txt
+source ./activate.sh && pip install -r requirements.dev.txt
 
 # Run tests
-python -m pytest tests/
+source ./activate.sh && python -m pytest tests/
 
 # Run pre-commit checks (formatting, linting)
-inv pre
+source ./activate.sh && inv pre
+```
+
+**IMPORTANT**: Always use `inv pre` or `pre-commit run --all-files` for code quality checks. Never run ruff or mypy directly.
 
 # Run tests with Docker (requires Docker)
-inv run
-inv logs
+source ./activate.sh && inv run
+source ./activate.sh && inv logs
 
 # Enter container for debugging
-inv container
+source ./activate.sh && inv container
 ```
 
 ### Dependency Management

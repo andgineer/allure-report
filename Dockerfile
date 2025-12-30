@@ -1,4 +1,4 @@
-FROM andgineer/allure:2.32.0
+FROM andgineer/allure:2
 
 ENV PYTHON_SOURCE=/generate-allure-report
 ENV APP_HOME=$PYTHON_SOURCE/app
