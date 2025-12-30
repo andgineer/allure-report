@@ -105,7 +105,7 @@ class AllureGenerator(ActionBase):  # type: ignore  # pylint: disable=too-many-i
         self.outputs.reports_root_url = self.root_url
         self.outputs.reports_site_path = self.inputs.reports_site_path
         self.outputs.reports_site = self.reports_site
-        self.summary += self.render(self.inputs.summary)  # pylint: disable=no-member
+        self.summary += self.render(self.inputs.summary)
         print(f"Report URL: {self.outputs.report_url}")
 
     def cleanup_reports(self) -> None:
