@@ -43,6 +43,9 @@ jobs:
     - name: Install dependencies
       run: uv pip install -r requirements.dev.txt
 
+    - name: Pull latest allure base image
+      run: docker pull andgineer/allure:2
+
     - name: test
       run: ${{ env.PYTEST_CMD }}
       env:
