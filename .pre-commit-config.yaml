@@ -64,5 +64,6 @@ repos:
         name: pyrefly check
         language: system
         args: [
-          "--project-excludes=tests"
+          "--project-excludes=tests",
+        "--python-interpreter-path=.venv/bin/python"
         ]

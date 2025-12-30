@@ -45,6 +45,8 @@ jobs:
 
     - name: test
       run: ${{ env.PYTEST_CMD }}
+      env:
+        ALLURE_IMAGE_PULL: 1  # Force pull latest andgineer/allure:2 (temporary for cache bust)
 
     - name: Coverage comment
       id: coverage_comment
