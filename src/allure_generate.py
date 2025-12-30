@@ -60,8 +60,8 @@ class AllureGeneratorOutputs(ActionOutputs):  # type: ignore  # pylint: disable=
 class AllureGenerator(ActionBase):  # type: ignore  # pylint: disable=too-many-instance-attributes
     """Generate Allure report from Allure test results to publish it to GitHub Pages."""
 
-    inputs: AllureGeneratorInputs
-    outputs: AllureGeneratorOutputs
+    inputs: AllureGeneratorInputs  # type: ignore[bad-override]
+    outputs: AllureGeneratorOutputs  # type: ignore[bad-override]
 
     def __init__(self) -> None:
         super().__init__()

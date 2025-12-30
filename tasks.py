@@ -111,7 +111,7 @@ def docker_build_task_factory(name, target_dir):
 
 namespace = Collection.from_module(sys.modules[__name__])
 for name in ALLOWED_VERSION_TYPES:
-    namespace.add_task(ver_task_factory(name), name=f"ver-{name}")
+    namespace.add_task(ver_task_factory(name), name=f"ver-{name}")  # type: ignore[bad-argument-type]
 for name, folder in DOCKER_FOLDERS.items():
     task_name = f"{BUILD_TASK_PREFIX}-{name}" if name else BUILD_TASK_PREFIX
-    namespace.add_task(docker_build_task_factory(task_name, folder), name=task_name)
+    namespace.add_task(docker_build_task_factory(task_name, folder), name=task_name)  # type: ignore[bad-argument-type]

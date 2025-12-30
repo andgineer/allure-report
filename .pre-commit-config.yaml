@@ -57,19 +57,12 @@ repos:
         args: [
           --line-length=100
         ]
-  - repo: local
+  - repo: https://github.com/facebook/pyrefly-pre-commit
+    rev: 0.46.1
     hooks:
-      - id: mypy
-        name: mypy
-        entry: mypy
-        args: [
-          "--install-types",
-          "--non-interactive",
-          "--ignore-missing-imports",
-          "--namespace-packages",
-          "--explicit-package-bases"
-        ]
-        require_serial: true
+      - id: pyrefly-check
+        name: pyrefly check
         language: system
-        types: [ python ]
-        exclude: ^tests/
+        args: [
+          "--project-excludes=tests"
+        ]
