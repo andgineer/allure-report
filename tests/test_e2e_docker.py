@@ -27,7 +27,7 @@ def test_allure_generate_docker(report_dir):
 
     # Build the image
     pull = os.getenv("ALLURE_IMAGE_PULL", "").lower() in ("1", "true", "yes")
-    image, _ = client.images.build(path=".", tag="allure-test", pull=pull)
+    image, _ = client.images.build(path=".", tag="allure-test", pull=pull, nocache=pull)
 
     # Set up volume bindings equivalent to docker-compose
     volumes = {

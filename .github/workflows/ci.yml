@@ -43,15 +43,10 @@ jobs:
     - name: Install dependencies
       run: uv pip install -r requirements.dev.txt
 
-    - name: Clear Docker cache and pull latest allure base image
-      run: |
-        docker system prune -a -f
-        docker pull andgineer/allure:2
-
     - name: test
       run: ${{ env.PYTEST_CMD }}
       env:
-        ALLURE_IMAGE_PULL: 1  # Force pull latest andgineer/allure:2 (temporary for cache bust)
+        ALLURE_IMAGE_PULL: 1  # Use --no-cache to bypass manifest cache and pull latest andgineer/allure:2
 
     - name: Coverage comment
       id: coverage_comment
