@@ -43,6 +43,9 @@ jobs:
     - name: Install dependencies
       run: uv pip install -r requirements.dev.txt
 
+    - name: Clear Docker build cache
+      run: docker builder prune -af
+
     - name: test
       run: ${{ env.PYTEST_CMD }}
       env:
