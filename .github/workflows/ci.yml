@@ -28,7 +28,6 @@ jobs:
         --junitxml=pytest.xml
         --cov-report=term-missing:skip-covered
         --cov=src tests/
-      ALLURE_IMAGE_PULL: 1  # Force fresh pull of base image (bypass cache)
 
     steps:
     - uses: actions/checkout@v4
@@ -43,18 +42,6 @@ jobs:
 
     - name: Install dependencies
       run: uv pip install -r requirements.dev.txt
-
-    - name: Force fresh Docker pull (bypass cache)
-      if: env.ALLURE_IMAGE_PULL == '1'
-      run: |
-        echo "=== Clearing Docker build cache ==="
-        docker builder prune -af
-        echo "=== Pulling andgineer/allure:2 with --disable-content-trust ==="
-        docker pull --disable-content-trust andgineer/allure:2
-        echo "=== Image digest ==="
-        docker inspect andgineer/allure:2 --format='{{.RepoDigests}}'
-        echo "=== Checking github-custom-actions version in pulled image ==="
-        docker run --rm andgineer/allure:2 sh -c 'uv pip list | grep github-custom-actions'
 
     - name: test
       run: ${{ env.PYTEST_CMD }}

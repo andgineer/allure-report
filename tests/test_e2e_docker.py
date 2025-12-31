@@ -3,7 +3,6 @@
 With real allure generate call.
 """
 
-import os
 import shutil
 import docker
 import pytest
@@ -26,8 +25,7 @@ def test_allure_generate_docker(report_dir):
     client = docker.from_env()
 
     # Build the image
-    pull = os.getenv("ALLURE_IMAGE_PULL", "").lower() in ("1", "true", "yes")
-    image, _ = client.images.build(path=".", tag="allure-test", pull=pull, nocache=pull)
+    image, _ = client.images.build(path=".", tag="allure-test")
 
     # Set up volume bindings equivalent to docker-compose
     volumes = {
