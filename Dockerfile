@@ -1,4 +1,4 @@
-FROM andgineer/allure:2
+FROM andgineer/allure:2.36.0
 # git-custom-actions was already installed in the upstream image
 
 ENV PYTHON_SOURCE=/generate-allure-report
