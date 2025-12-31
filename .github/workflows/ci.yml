@@ -54,7 +54,7 @@ jobs:
         echo "=== Image digest ==="
         docker inspect andgineer/allure:2 --format='{{.RepoDigests}}'
         echo "=== Checking github-custom-actions version in pulled image ==="
-        docker run --rm andgineer/allure:2 sh -c 'pip list | grep github-custom-actions'
+        docker run --rm andgineer/allure:2 sh -c 'uv pip list | grep github-custom-actions'
 
     - name: test
       run: ${{ env.PYTEST_CMD }}
