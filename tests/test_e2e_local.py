@@ -17,7 +17,9 @@ def test_create_directories(capsys, env, expected_index_file, expected_executor_
     shutil.rmtree(allure_gen.reports_site, ignore_errors=True)
     (allure_gen.inputs.allure_results / "executor.json").unlink(missing_ok=True)
     shutil.rmtree(allure_gen.inputs.allure_results / "history", ignore_errors=True)
-    (allure_gen.reports_site / "1" / "history").mkdir(parents=True, exist_ok=True)
+    (allure_gen.reports_site / allure_gen.run_folder_name / "history").mkdir(
+        parents=True, exist_ok=True
+    )
     with patch("subprocess.run") as mock_subprocess:
         allure_gen.run()
 
@@ -40,7 +42,7 @@ def test_create_directories(capsys, env, expected_index_file, expected_executor_
                     "--clean",
                     str(allure_gen.inputs.allure_results),
                     "-o",
-                    str(allure_gen.reports_site / allure_gen.env.github_run_number),
+                    str(allure_gen.reports_site / allure_gen.run_folder_name),
                 ],
                 check=True,
             )
@@ -52,5 +54,5 @@ def test_create_directories(capsys, env, expected_index_file, expected_executor_
             f"Expected a call with `{__version__}` not found in print calls"
         )
 
-        last_report_url = "https://owner.github.io/repo/builds/tests/1/index.html#behavior"
+        last_report_url = "https://owner.github.io/repo/builds/tests/1-1/index.html#behaviors"
         assert f"report-url={last_report_url}" in Path(os.environ["GITHUB_OUTPUT"]).read_text()

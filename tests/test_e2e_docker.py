@@ -69,8 +69,8 @@ def test_allure_generate_docker(report_dir):
 
         # Verify the results
         assert report_dir.exists(), "allure directory not created"
-        assert (report_dir / "2" / "history" / "history.json").exists()
-        assert (report_dir / "2" / "index.html").exists()
+        assert (report_dir / "2-1" / "history" / "history.json").exists()
+        assert (report_dir / "2-1" / "index.html").exists()
         assert (report_dir / "22" / "history" / "history.json").exists()
         assert (report_dir / "last-history" / "history.json").exists()
 
