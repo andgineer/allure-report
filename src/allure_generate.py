@@ -114,7 +114,9 @@ class AllureGenerator(ActionBase):  # type: ignore  # pylint: disable=too-many-i
         In site report folder each report is stored in a separate sub folder.
         """
         reports_folders = [
-            f for f in self.reports_site.glob("*") if f.is_dir() and re.match(r"^\d+$", f.name)
+            f
+            for f in self.reports_site.glob("*")
+            if f.is_dir() and re.match(r"^\d+(-\d+)?$", f.name)
         ]
         print(
             f"Found {len(reports_folders)} report(s) in history, "
@@ -125,7 +127,7 @@ class AllureGenerator(ActionBase):  # type: ignore  # pylint: disable=too-many-i
             and len(reports_folders)
             > self.max_history_reports  # already excluding index.html and CNAME
         ):
-            reports_folders.sort(key=lambda x: int(x.name))
+            reports_folders.sort(key=lambda x: int(x.name.split("-")[0]))
             excess_count = len(reports_folders) - self.max_history_reports
 
             # Remove the oldest reports which are the first 'excess_count' elements
@@ -147,9 +149,14 @@ class AllureGenerator(ActionBase):  # type: ignore  # pylint: disable=too-many-i
         return url
 
     @cached_property
+    def run_folder_name(self) -> str:
+        """Report folder name combining run number and attempt for uniqueness across re-runs."""
+        return f"{self.env.github_run_number}-{self.env.github_run_attempt}"
+
+    @cached_property
     def last_report_file_url(self) -> str:
         """Get URL to the last report."""
-        return "/".join([self.root_url, self.env.github_run_number]) + "/index.html"
+        return "/".join([self.root_url, self.run_folder_name]) + "/index.html"
 
     def report_page(self) -> str:
         """Get the report page part of the url."""
@@ -193,13 +200,13 @@ class AllureGenerator(ActionBase):  # type: ignore  # pylint: disable=too-many-i
                 "--clean",
                 str(self.inputs.allure_results),
                 "-o",
-                str(self.reports_site / self.env.github_run_number),
+                str(self.reports_site / self.run_folder_name),
             ],
             check=True,
         )
 
         shutil.copytree(
-            self.reports_site / self.env.github_run_number / "history",
+            self.reports_site / self.run_folder_name / "history",
             self.reports_site / "last-history",
             dirs_exist_ok=True,
         )

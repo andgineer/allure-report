@@ -52,6 +52,7 @@ def env():
             "GITHUB_REPOSITORY_OWNER": "owner",
             "GITHUB_SERVER_URL": "https://github.com",
             "GITHUB_RUN_NUMBER": "1",
+            "GITHUB_RUN_ATTEMPT": "1",
             "GITHUB_RUN_ID": "1",
             "GITHUB_WORKFLOW": "CI/CD",
             "GITHUB_OUTPUT": str(temp_path / "github/workflow/output"),

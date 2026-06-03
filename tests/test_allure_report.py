@@ -104,9 +104,7 @@ def test_website_folder_unexisted(env):
     with patch.dict(os.environ, {"INPUT_WEBSITE": "-unexisted-"}):
         with patch("subprocess.run"):
             gen = AllureGenerator()
-            (gen.reports_site / gen.env.github_run_number / "history").mkdir(
-                parents=True, exist_ok=True
-            )
+            (gen.reports_site / gen.run_folder_name / "history").mkdir(parents=True, exist_ok=True)
             gen.run()
         assert not (gen.reports_site / "22").exists()
         assert (gen.reports_site / "index.html").exists()
@@ -117,9 +115,7 @@ def test_no_summary(env):
     with patch.dict(os.environ, {"INPUT_SUMMARY": ""}):
         with patch("subprocess.run"):
             gen = AllureGenerator()
-            (gen.reports_site / gen.env.github_run_number / "history").mkdir(
-                parents=True, exist_ok=True
-            )
+            (gen.reports_site / gen.run_folder_name / "history").mkdir(parents=True, exist_ok=True)
             gen.run()
         assert gen.env.github_step_summary.read_text() == ""
 
@@ -127,11 +123,38 @@ def test_no_summary(env):
 def test_summary(env):
     with patch("subprocess.run"):
         gen = AllureGenerator()
-        (gen.reports_site / gen.env.github_run_number / "history").mkdir(
-            parents=True, exist_ok=True
-        )
+        (gen.reports_site / gen.run_folder_name / "history").mkdir(parents=True, exist_ok=True)
         gen.run()
     assert "github.io" in gen.outputs["report-url"]
     assert gen.outputs["report-url"] in gen.env.github_output.read_text()
     assert "reports-site-path=builds/tests" in gen.env.github_output.read_text()
     assert "reports-root-url=https://owner.github.io/repo" in gen.env.github_output.read_text()
+
+
+def test_run_folder_name_includes_attempt(env):
+    gen = AllureGenerator()
+    assert gen.run_folder_name == "1-1"
+
+
+def test_cleanup_mixed_old_and_new_folders(env):
+    with (
+        patch("pathlib.Path.glob") as mock_glob,
+        patch("pathlib.Path.mkdir"),
+        patch("shutil.rmtree", autospec=True) as mock_shutil_rmtree,
+    ):
+        reports = []
+        for name in ["5", "6", "7-1", "8-2"]:
+            report = MagicMock(spec=Path, is_dir=MagicMock(return_value=True))
+            type(report).name = PropertyMock(return_value=name)
+            reports.append(report)
+        mock_glob.return_value = reports
+
+        gen = AllureGenerator()
+        gen.max_history_reports = 3
+        gen.cleanup_reports()
+
+        deleted = [
+            r for call in mock_shutil_rmtree.call_args_list for r in reports if call[0][0] == r
+        ]
+        assert len(deleted) == 1
+        assert deleted[0].name == "5"
